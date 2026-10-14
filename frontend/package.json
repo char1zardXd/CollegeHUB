@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy:backend": "npm run build && shx rm -rf ../backend/src/main/resources/static && shx mkdir -p ../backend/src/main/resources/static && shx cp -r dist/. ../backend/src/main/resources/static"
   },
   "dependencies": {
     "axios": "^1.20.0",

@@ -1,22 +1,37 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+//framework import
+import  {BrowserRouter, Routes, Route} from "react-router-dom";
+import "./App.css"
 
-import MainLayout from "./layouts/MainLayout";
+//pages import
 import HomePage from "./pages/HomePage";
-import StudentsPage from "./pages/StudentsPage";
-import AssignmentsPage from "./pages/AssignmentsPage";
+import SubjectsPage from "./pages/SubjectsPage";
+import FlashCardPage from "./pages/FlashCardPage";
+import LeaderboardPage from "./pages/LeaderboardPage";
+import UserProfilePage from "./pages/UserProfilePage";
 
-import "./App.css";
+//components import
+import Header from "./components/Header";
+import Sidebar from "./components/Sidebar";
 
-export default function App() {
-  return (
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<MainLayout />}>
-            <Route index element={<HomePage />} />
-            <Route path="students" element={<StudentsPage />} />
-            <Route path="assignments" element={<AssignmentsPage />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-  );
+function App() {
+    return (
+        <BrowserRouter>
+            <Header />
+            <div className="app-body">
+                <Sidebar />
+
+                <main className="content-area">
+                    <Routes>
+                        <Route path="/HomePage" element={<HomePage />} />
+                        <Route path="/subjects" element={<SubjectsPage />} />
+                        <Route path="/flashcards" element={<FlashCardPage />} />
+                        <Route path="/leaderboard" element={<LeaderboardPage />} />
+                        <Route path="/UserProfilePage" element={<UserProfilePage />} />
+                    </Routes>
+                </main>
+            </div>
+        </BrowserRouter>
+    );
 }
+
+export default App;
