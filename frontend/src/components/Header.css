@@ -1,0 +1,10 @@
+.site-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1e293b;
+}
+.logo-img {
+    height: 40px;
+    width: auto;
+}

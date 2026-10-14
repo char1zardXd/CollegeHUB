@@ -1,0 +1,13 @@
+.sidebar {
+    width: 240px;
+    background-color: #1e293b;
+    color: #ffffff;
+    height: calc(100vh - 73px);
+    display: flex;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
