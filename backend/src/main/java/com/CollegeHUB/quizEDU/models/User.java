@@ -1,4 +1,4 @@
-package CollegeHUB.quizEDU.models;
+package com.CollegeHUB.quizEDU.models;
 
 public class User {
     private int id;
