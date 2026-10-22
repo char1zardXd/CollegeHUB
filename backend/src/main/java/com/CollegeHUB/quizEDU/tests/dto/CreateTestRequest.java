@@ -6,6 +6,7 @@ public class CreateTestRequest {
 
     private String title;
     private String description;
+    private String tag;
     private List<CreateQuestionRequest> questions;
 
     public CreateTestRequest() {
@@ -33,5 +34,13 @@ public class CreateTestRequest {
 
     public void setQuestions(List<CreateQuestionRequest> questions) {
         this.questions = questions;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 }

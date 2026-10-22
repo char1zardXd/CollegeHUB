@@ -20,6 +20,9 @@ public class Test {
     @Column(name = "description", nullable = false)
     private String description; // описание теста
 
+    @Column(name = "tag", nullable = true) // потом заменить на false
+    private String tag;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
@@ -81,5 +84,13 @@ public class Test {
 
     public void setQuestions(List<Question> questions) {
         this.questions = questions;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 }
