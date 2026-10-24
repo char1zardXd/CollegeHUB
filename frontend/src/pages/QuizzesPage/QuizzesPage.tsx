@@ -34,7 +34,6 @@ export default function QuizzesPage() {
   return (
     <div className="quizzes-page">
       <div className="quizzes-page__head">
-        <h1 className="quizzes-page__title">Тести та Квізи</h1>
         <button
           type="button"
           className="quizzes-page__create"

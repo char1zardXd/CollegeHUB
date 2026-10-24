@@ -4,6 +4,7 @@
   background: var(--color-bg);
 }
 
+/* ---------- Сайдбар ---------- */
 .sidebar {
   width: var(--sidebar-width);
   flex-shrink: 0;
@@ -16,6 +17,11 @@
   background: var(--color-sidebar);
 }
 
+.sidebar-logo {
+  text-decoration: none;
+  color: inherit;
+}
+
 .sidebar h2 {
   margin: 0;
   padding: 0 8px;
@@ -26,6 +32,7 @@
 }
 
 .sidebar nav {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -55,8 +62,91 @@
   color: #fff;
 }
 
+.sidebar-logout {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  border-radius: var(--radius-sm);
+}
+
+.sidebar-logout:hover {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+/* ---------- Права частина ---------- */
+.main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+
+.topbar-title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.topbar-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 260px;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+}
+
+.topbar-search input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 13px;
+  color: var(--color-text);
+}
+
+.topbar-search input::placeholder {
+  color: var(--color-text-soft);
+}
+
+.topbar-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 600;
+}
+
 .content {
   flex: 1;
   min-width: 0;
-  padding: 32px 40px;
+  padding: 32px 40px 40px;
 }
