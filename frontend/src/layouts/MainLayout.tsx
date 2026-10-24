@@ -1,11 +1,11 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { House, Users, BookOpen } from "lucide-react";
+import { House, Users, BookOpen, ClipboardList } from "lucide-react";
 
 export default function MainLayout() {
     return (
         <div className="app-layout">
             <aside className="sidebar">
-                <h2>CollegeHUB</h2>
+                <h2>CollegeHub</h2>
 
                 <nav>
                     <NavLink to="/" end>
@@ -21,6 +21,11 @@ export default function MainLayout() {
                     <NavLink to="/assignments">
                         <BookOpen size={20} />
                         Завдання
+                    </NavLink>
+
+                    <NavLink to="/quizzes">
+                        <ClipboardList size={20} />
+                        Тести та Квізи
                     </NavLink>
                 </nav>
             </aside>

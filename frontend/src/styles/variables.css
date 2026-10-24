@@ -1,0 +1,45 @@
+:root {
+  /* Бренд */
+  --color-primary: #8b4570;
+  --color-primary-hover: #7a3b63;
+  --color-primary-soft: #f6e6ef;
+  --color-sidebar-active: #a64d79;
+
+  /* Поверхні */
+  --color-bg: #ffffff;
+  --color-sidebar: #e8dce3;
+  --color-border: #ececf0;
+  --color-input-bg: #f6f7fa;
+  --color-overlay: rgba(40, 30, 40, 0.35);
+
+  /* Текст */
+  --color-text: #1f1520;
+  --color-text-muted: #7b7580;
+  --color-text-soft: #a09aa5;
+
+  /* Пастельні кольори карток */
+  --card-green: #c8dfd1;
+  --card-green-icon: #a9cdb8;
+  --card-purple: #cdc1f7;
+  --card-purple-icon: #b3a4ee;
+  --card-pink: #eec8d3;
+  --card-pink-icon: #e5a9bb;
+  --card-blue: #c5d2fb;
+  --card-blue-icon: #a2b8ef;
+  --card-orange: #f5d7ac;
+  --card-orange-icon: #eab978;
+  --card-yellow: #faf0b4;
+  --card-yellow-icon: #e6df9a;
+
+  /* Розміри */
+  --sidebar-width: 240px;
+  --header-height: 76px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 28px;
+  --radius-pill: 999px;
+
+  --shadow-modal: 0 24px 60px rgba(40, 20, 40, 0.25);
+
+  --font-main: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}

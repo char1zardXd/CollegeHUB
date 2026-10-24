@@ -1,13 +1,70 @@
 .sidebar {
-    width: 240px;
-    background-color: #1e293b;
-    color: #ffffff;
-    height: calc(100vh - 73px);
-    display: flex;
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 28px 20px 24px;
+  background: var(--color-sidebar);
+}
+
+.sidebar-logo {
+  padding: 0 8px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
 }
 
 .sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 44px;
+}
+
+.sidebar-nav a {
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s, color 0.15s;
+}
+
+.sidebar-nav a:hover {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.sidebar-nav a.active {
+  background: var(--color-sidebar-active);
+  color: #fff;
+}
+
+.sidebar-logout {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  border-radius: var(--radius-sm);
+}
+
+.sidebar-logout:hover {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.sidebar-item--disabled {
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    opacity: 0.6;
+    cursor: default;
 }
