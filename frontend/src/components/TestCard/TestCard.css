@@ -1,0 +1,47 @@
+.test-card {
+    display: flex;
+    flex-direction: column;
+    height: 331px;
+    min-width: 0;
+    padding: 33px 33px 39px;
+    border-radius: 34px;
+    color: #241925;
+}
+
+.test-card__header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.test-card__category { padding-top: 2px; color: #807582; font-size: 14px; font-weight: 400; line-height: 21px; }
+.test-card__icon { display: grid; place-items: center; width: 66px; height: 66px; flex: 0 0 66px; border-radius: 22px; color: #62355e; }
+.test-card__body { margin-top: auto; }
+.test-card__title { margin: 0 0 17px; font-size: 24px; line-height: 1.26; letter-spacing: -.5px; font-weight: 700; }
+.test-card__description {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
+    color: #857a85;
+    font-size: 14px;
+    line-height: 21px;
+}
+.test-card--mint { background: #c7dfd3; }
+.test-card--mint .test-card__icon { background: #a0c9b8; }
+.test-card--purple { background: #cdc1fa; }
+.test-card--purple .test-card__icon { background: #aa97e6; }
+.test-card--pink { background: #efcbd6; }
+.test-card--pink .test-card__icon { background: #e4a7bd; color: #a84f7f; }
+.test-card--blue { background: #c6d3fb; }
+.test-card--blue .test-card__icon { background: #9eb9ea; }
+.test-card--peach { background: #f5d7ab; }
+.test-card--peach .test-card__icon { background: #ecc389; color: #b64c83; }
+.test-card--yellow { background: #fcf3b7; }
+.test-card--yellow .test-card__icon { background: #eae097; color: #7e7281; }
+
+@media (max-width: 1100px) {
+    .test-card { padding: 28px; }
+    .test-card__title { font-size: 22px; }
+}
+@media (max-width: 520px) {
+    .test-card { min-height: 290px; height: auto; padding: 24px; }
+    .test-card__body { padding-top: 48px; }
+    .test-card__title { font-size: 21px; }
+}
