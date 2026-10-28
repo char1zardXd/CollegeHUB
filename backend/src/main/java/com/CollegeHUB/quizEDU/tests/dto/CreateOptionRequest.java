@@ -3,7 +3,7 @@ package com.CollegeHUB.quizEDU.tests.dto;
 public class CreateOptionRequest {
 
     private String text;
-    private boolean isCorrect;
+    private boolean correct;
 
     public CreateOptionRequest() {
     }
@@ -17,10 +17,10 @@ public class CreateOptionRequest {
     }
 
     public boolean isCorrect() {
-        return isCorrect;
+        return correct;
     }
 
     public void setCorrect(boolean correct) {
-        isCorrect = correct;
+        this.correct = correct;
     }
 }

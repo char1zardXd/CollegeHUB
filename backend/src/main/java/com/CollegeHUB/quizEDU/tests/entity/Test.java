@@ -20,7 +20,7 @@ public class Test {
     @Column(name = "description", nullable = false)
     private String description; // описание теста
 
-    @Column(name = "tag", nullable = true) // потом заменить на false
+    @Column(name = "tag", nullable = true)
     private String tag;
 
     @ManyToOne(fetch = FetchType.LAZY)

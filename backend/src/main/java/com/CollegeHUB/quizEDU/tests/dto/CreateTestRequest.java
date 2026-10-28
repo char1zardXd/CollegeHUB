@@ -35,7 +35,6 @@ public class CreateTestRequest {
     public void setQuestions(List<CreateQuestionRequest> questions) {
         this.questions = questions;
     }
-
     public String getTag() {
         return tag;
     }

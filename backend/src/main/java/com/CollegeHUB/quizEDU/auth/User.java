@@ -1,6 +1,5 @@
 package com.CollegeHUB.quizEDU.auth;
 
-
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
