@@ -30,15 +30,15 @@ public class TestService {
     @Transactional
     public Long createTest(CreateTestRequest request, Long authorId) {
         if (request.getQuestions() == null || request.getQuestions().isEmpty()) {
-            throw new RuntimeException("Тест должен содержать хотя бы один вопрос!");
+            throw new RuntimeException("Тест має містити хоча б одне питання!");
         }
         if (request.getQuestions().size() > 25) {
-            throw new RuntimeException("Максимальное количество вопросов в тесте — 25!");
+            throw new RuntimeException("Максимальна кількість питань у тесті - 25!");
         }
 
         for (var qDto : request.getQuestions())  {
             if (qDto.getOptions() == null || qDto.getOptions().size() != 4) {
-                throw new RuntimeException("В вопросе должно быть ровно 4 варианта ответа!");
+                throw new RuntimeException("У питанні має бути 4 варіанти відповіді!");
             }
 
             int correctCount = 0;
@@ -49,13 +49,13 @@ public class TestService {
             }
 
             if (correctCount != 1) {
-                throw new RuntimeException("В каждом вопросе должен быть ровно один правильный ответ!"
+                throw new RuntimeException("В кожному питанні має бути одна правильна відповідь!"
                 );
             }
         }
 
         User author = usersRepo.findById(authorId)
-                .orElseThrow(() -> new RuntimeException("Автор не найден"));
+                .orElseThrow(() -> new RuntimeException("Автор не знайдений"));
 
         Test test = new Test();
         test.setTitle(request.getTitle());
