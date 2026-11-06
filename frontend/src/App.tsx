@@ -6,6 +6,8 @@ import EmptyPage from './pages/EmptyPage/EmptyPage';
 import TestPage from './pages/TestPage/TestPage';
 import TestPlayPage from './pages/TestPlayPage/TestPlayPage';
 import TestResultPage from './pages/TestResultPage/TestResultPage';
+import LandingPage from './pages/LandingPage/LandingPage';
+import LoginPage from './pages/LoginPage/LoginPage';
 import './App.css';
 
 function Dashboard() {
@@ -19,6 +21,7 @@ function Dashboard() {
                     <main className="main-content" id="main-content">
                         <Routes>
                             <Route path="/" element={<Navigate to="/tests" replace />} />
+                            <Route path="/welcome" element={<LandingPage />} />
                             <Route path="/tests" element={<TestPage />} />
                             <Route path="/my-learning" element={<EmptyPage />} />
                             <Route path="/courses" element={<EmptyPage />} />
@@ -36,7 +39,16 @@ export default function App() {
     return (
         <BrowserRouter>
             <Routes>
+                <Route path="/welcome" element={<LandingPage />} />
+                <Route
+                    path="/login"
+                    element={<LoginPage mode="login" />}
+                />
 
+                <Route
+                    path="/register"
+                    element={<LoginPage mode="register" />}
+                />
                 <Route
                     path="/tests/:id/play"
                     element={<TestPlayPage />}
