@@ -4,81 +4,76 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email", nullable = false,unique = true)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
-
-    @Column(name = "full_name", nullable = false)
-    private String fullName;
-
-    @Column(name = "role", nullable = false)
-    private String role;
 
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
+
+    @Column(name = "phone_number", nullable = true)
+    private String phoneNumber;
+
+    @Column(name = "role", nullable = false)
+    private String role;
+
     @Column(name = "entry_time", nullable = false, updatable = false)
     private LocalDateTime entryTime = LocalDateTime.now();
+
+    @Column(name = "user_group", nullable = true)
+    private String group;
+
+    @Column(name = "completed_tests_count", nullable = false)
+    private int completedTestsCount = 0;
+
+    @Column(name = "average_score_percentage", nullable = false)
+    private double averageScorePercentage = 0.0;
 
     public User() {
     }
 
-    public User(Long id, String email, String fullName, String role, String password, LocalDateTime entryTime) {
-        this.id = id;
-        this.email = email;
-        this.fullName = fullName;
-        this.role = role;
-        this.password = password;
-        this.entryTime = entryTime;
-    }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getEmail() {
-        return email;
-    }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
 
-    public String getFullName() {
-        return fullName;
-    }
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
+    public String getPhoneNumber() { return phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
 
-    public String getRole() {
-        return role;
-    }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
+    public LocalDateTime getEntryTime() { return entryTime; }
 
-    public String getPassword() {
-        return password;
-    }
+    public String getGroup() { return group; }
+    public void setGroup(String group) { this.group = group; }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    public int getCompletedTestsCount() { return completedTestsCount; }
+    public void setCompletedTestsCount(int completedTestsCount) { this.completedTestsCount = completedTestsCount; }
 
-    public LocalDateTime getEntryTime() {
-        return entryTime;
-    }
+    public double getAverageScorePercentage() { return averageScorePercentage; }
+    public void setAverageScorePercentage(double averageScorePercentage) { this.averageScorePercentage = averageScorePercentage; }
 }
