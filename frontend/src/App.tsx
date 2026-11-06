@@ -4,15 +4,18 @@ import Header from './components/Header/Header';
 import Sidebar from './components/Sidebar/Sidebar';
 import EmptyPage from './pages/EmptyPage/EmptyPage';
 import TestPage from './pages/TestPage/TestPage';
+import TestPlayPage from './pages/TestPlayPage/TestPlayPage';
+import TestResultPage from './pages/TestResultPage/TestResultPage';
 import './App.css';
 
-export default function App() {
+function Dashboard() {
     return (
-        <BrowserRouter>
             <div className="app-shell">
                 <Sidebar />
+
                 <div className="workspace">
                     <Header />
+
                     <main className="main-content" id="main-content">
                         <Routes>
                             <Route path="/" element={<Navigate to="/tests" replace />} />
@@ -27,6 +30,25 @@ export default function App() {
                     </main>
                 </div>
             </div>
+    );
+}
+export default function App() {
+    return (
+        <BrowserRouter>
+            <Routes>
+
+                <Route
+                    path="/tests/:id/play"
+                    element={<TestPlayPage />}
+                />
+
+                <Route
+                    path="/tests/:id/result"
+                    element={<TestResultPage />}
+                />
+
+                <Route path="/*" element={<Dashboard />} />
+            </Routes>
         </BrowserRouter>
     );
 }
