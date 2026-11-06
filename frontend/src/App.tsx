@@ -1,37 +1,32 @@
-//framework import
-import  {BrowserRouter, Routes, Route} from "react-router-dom";
-import "./App.css"
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
-//pages import
-import HomePage from "./pages/HomePage";
-import SubjectsPage from "./pages/SubjectsPage";
-import FlashCardPage from "./pages/FlashCardPage";
-import LeaderboardPage from "./pages/LeaderboardPage";
-import UserProfilePage from "./pages/UserProfilePage";
+import Header from './components/Header/Header';
+import Sidebar from './components/Sidebar/Sidebar';
+import EmptyPage from './pages/EmptyPage/EmptyPage';
+import TestPage from './pages/TestPage/TestPage';
+import './App.css';
 
-//components import
-import Header from "./components/Header";
-import Sidebar from "./components/Sidebar";
-
-function App() {
+export default function App() {
     return (
         <BrowserRouter>
-            <Header />
-            <div className="app-body">
+            <div className="app-shell">
                 <Sidebar />
-
-                <main className="content-area">
-                    <Routes>
-                        <Route path="/HomePage" element={<HomePage />} />
-                        <Route path="/subjects" element={<SubjectsPage />} />
-                        <Route path="/flashcards" element={<FlashCardPage />} />
-                        <Route path="/leaderboard" element={<LeaderboardPage />} />
-                        <Route path="/UserProfilePage" element={<UserProfilePage />} />
-                    </Routes>
-                </main>
+                <div className="workspace">
+                    <Header />
+                    <main className="main-content" id="main-content">
+                        <Routes>
+                            <Route path="/" element={<Navigate to="/tests" replace />} />
+                            <Route path="/tests" element={<TestPage />} />
+                            <Route path="/my-learning" element={<EmptyPage />} />
+                            <Route path="/courses" element={<EmptyPage />} />
+                            <Route path="/calendar" element={<EmptyPage />} />
+                            <Route path="/analytics" element={<EmptyPage />} />
+                            <Route path="/profile" element={<EmptyPage />} />
+                            <Route path="*" element={<Navigate to="/tests" replace />} />
+                        </Routes>
+                    </main>
+                </div>
             </div>
         </BrowserRouter>
     );
 }
-
-export default App;
