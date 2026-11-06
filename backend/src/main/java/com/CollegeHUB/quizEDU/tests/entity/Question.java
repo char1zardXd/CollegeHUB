@@ -1,4 +1,6 @@
 package com.CollegeHUB.quizEDU.tests.entity;
+import com.CollegeHUB.quizEDU.tests.entity.AnswerOption;
+import com.CollegeHUB.quizEDU.tests.entity.Test;
 
 import jakarta.persistence.*;
 
@@ -34,6 +36,7 @@ public class Question {
     }
 
     public void addOption(AnswerOption option) {
+        options.add(option);
         option.setQuestion(this);
     }
 
