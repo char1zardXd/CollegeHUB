@@ -1,12 +1,13 @@
 package com.CollegeHUB.quizEDU.tests.entity;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
+import com.CollegeHUB.quizEDU.tests.entity.Question;
 
 @Entity
 @Table(name = "answer_options")
 public class AnswerOption {
 
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
