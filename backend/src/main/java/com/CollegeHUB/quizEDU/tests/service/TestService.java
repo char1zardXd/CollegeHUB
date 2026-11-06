@@ -85,7 +85,7 @@ public class TestService {
         List<Test> tests = testRepo.findAll();
         return tests.stream().map(test -> new TestResponse(
                 test.getId(),
-                test.getAuthor() != null ? test.getAuthor().getFullName() : "Unknown",
+                test.getAuthor() != null ? test.getAuthor().getFirstName() : "Unknown",
                 test.getTitle(),
                 test.getDescription(),
                 null,
