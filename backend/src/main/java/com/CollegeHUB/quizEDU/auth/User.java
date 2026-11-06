@@ -76,4 +76,5 @@ public class User {
 
     public double getAverageScorePercentage() { return averageScorePercentage; }
     public void setAverageScorePercentage(double averageScorePercentage) { this.averageScorePercentage = averageScorePercentage; }
+
 }
