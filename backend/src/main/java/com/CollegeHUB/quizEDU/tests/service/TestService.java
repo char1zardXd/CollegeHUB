@@ -1,9 +1,9 @@
 package com.CollegeHUB.quizEDU.tests.service;
 
-import com.CollegeHUB.quizEDU.auth.User;
-import com.CollegeHUB.quizEDU.auth.UsersRepo;
-import com.CollegeHUB.quizEDU.tests.TestRepo;
-import com.CollegeHUB.quizEDU.tests.TestResultRepo;
+import com.CollegeHUB.quizEDU.auth.entity.User;
+import com.CollegeHUB.quizEDU.auth.repo.UsersRepo;
+import com.CollegeHUB.quizEDU.tests.repo.TestRepo;
+import com.CollegeHUB.quizEDU.tests.repo.TestResultRepo;
 import com.CollegeHUB.quizEDU.tests.dto.*;
 import com.CollegeHUB.quizEDU.tests.entity.AnswerOption;
 import com.CollegeHUB.quizEDU.tests.entity.Question;
@@ -85,10 +85,10 @@ public class TestService {
         List<Test> tests = testRepo.findAll();
         return tests.stream().map(test -> new TestResponse(
                 test.getId(),
-                test.getAuthor() != null ? test.getAuthor().getFirstName() : "Unknown",
+                test.getAuthor() != null ? test.getAuthor().getFullName() : "Unknown",
                 test.getTitle(),
                 test.getDescription(),
-                null,
+                null, // Заменить
                 test.getQuestions() != null ? test.getQuestions().size() : 0
         )).collect(Collectors.toList());
     }
