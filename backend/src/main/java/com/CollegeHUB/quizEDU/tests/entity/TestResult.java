@@ -40,7 +40,6 @@ public class TestResult {
     public void setScore(int score) { this.score = score; }
     public LocalDateTime getCompletedAt() { return completedAt; }
     public void setCompletedAt(LocalDateTime completedAt) { this.completedAt = completedAt; }
-
     public double getPercentage() {
         return percentage;
     }
