@@ -1,6 +1,7 @@
-package com.CollegeHUB.quizEDU.auth;
+package com.CollegeHUB.quizEDU.auth.entity;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,26 +18,23 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
-
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
+    @Column(name = "full_name", nullable = false)
+    private String fullName;
 
     @Column(name = "phone_number", nullable = true)
     private String phoneNumber;
 
     @Column(name = "role", nullable = false)
-    private String role;
+    private String role = "STUDENT";
 
     @Column(name = "entry_time", nullable = false, updatable = false)
-    private LocalDateTime entryTime = LocalDateTime.now();
+    private LocalDateTime entryTime;
 
     @Column(name = "user_group", nullable = true)
     private String group;
 
     @Column(name = "completed_tests_count", nullable = false)
-    private int completedTestsCount = 0;
+    private long completedTestsCount = 0;
 
     @Column(name = "average_score_percentage", nullable = false)
     private double averageScorePercentage = 0.0;
@@ -44,6 +42,17 @@ public class User {
     public User() {
     }
 
+    public User(String email, String password, String fullName, String group) {
+        this.email = email;
+        this.password = password;
+        this.fullName = fullName;
+        this.group = group;
+    }
+
+    @PrePersist
+    protected void onCreate () {
+        this.entryTime = LocalDateTime.now();
+    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -54,11 +63,13 @@ public class User {
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 
-    public String getFirstName() { return firstName; }
-    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public String getFullName() {
+        return fullName;
+    }
 
-    public String getLastName() { return lastName; }
-    public void setLastName(String lastName) { this.lastName = lastName; }
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
 
     public String getPhoneNumber() { return phoneNumber; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
@@ -71,7 +82,7 @@ public class User {
     public String getGroup() { return group; }
     public void setGroup(String group) { this.group = group; }
 
-    public int getCompletedTestsCount() { return completedTestsCount; }
+    public long getCompletedTestsCount() { return completedTestsCount; }
     public void setCompletedTestsCount(int completedTestsCount) { this.completedTestsCount = completedTestsCount; }
 
     public double getAverageScorePercentage() { return averageScorePercentage; }
