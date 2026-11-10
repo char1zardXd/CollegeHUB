@@ -26,6 +26,9 @@ public class TestResult {
     @Column(name = "completed_at", nullable = false)
     private LocalDateTime completedAt = LocalDateTime.now();
 
+    @Column(name = "percentage", nullable = false)
+    private double percentage;
+
     // Геттеры и сеттеры
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -37,4 +40,12 @@ public class TestResult {
     public void setScore(int score) { this.score = score; }
     public LocalDateTime getCompletedAt() { return completedAt; }
     public void setCompletedAt(LocalDateTime completedAt) { this.completedAt = completedAt; }
+
+    public double getPercentage() {
+        return percentage;
+    }
+
+    public void setPercentage(double percentage) {
+        this.percentage = percentage;
+    }
 }

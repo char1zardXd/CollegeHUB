@@ -34,7 +34,7 @@ public class User {
     private String group;
 
     @Column(name = "completed_tests_count", nullable = false)
-    private int completedTestsCount = 0;
+    private long completedTestsCount = 0;
 
     @Column(name = "average_score_percentage", nullable = false)
     private double averageScorePercentage = 0.0;
@@ -82,7 +82,7 @@ public class User {
     public String getGroup() { return group; }
     public void setGroup(String group) { this.group = group; }
 
-    public int getCompletedTestsCount() { return completedTestsCount; }
+    public long getCompletedTestsCount() { return completedTestsCount; }
     public void setCompletedTestsCount(int completedTestsCount) { this.completedTestsCount = completedTestsCount; }
 
     public double getAverageScorePercentage() { return averageScorePercentage; }

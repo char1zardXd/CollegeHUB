@@ -11,7 +11,7 @@ public class RegisterRequest {
     private String email;
 
     @NotBlank
-    @Size(min = 6, message = "minimum 6 symbols")
+    @Size(min = 8, message = "minimum 6 symbols")
     private String password;
 
     @NotBlank
