@@ -1,9 +1,18 @@
 import { LogOut } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { navigationItems } from "../../navigation";
+import { useAuth } from '../../auth/AuthContext';
 import './Sidebar.css';
 
 export default function Sidebar() {
+    const { logout } = useAuth();
+    const navigate = useNavigate();
+
+    function handleLogout() {
+        logout();
+        navigate('/login', { replace: true });
+    }
+
     return (
         <aside className="sidebar" aria-label="Бічна навігація">
             <NavLink to="/tests" className="sidebar-brand">CollegeHub</NavLink>
@@ -18,10 +27,10 @@ export default function Sidebar() {
                     </NavLink>
                 ))}
             </nav>
-            <div className="sidebar-footer" title="Авторизація ще не підключена">
+            <button type="button" className="sidebar-footer" onClick={handleLogout}>
                 <LogOut size={18} strokeWidth={1.9} aria-hidden="true" />
                 <span>Вийти</span>
-            </div>
+            </button>
         </aside>
     );
 }
