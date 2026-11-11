@@ -1,6 +1,8 @@
 package com.CollegeHUB.quizEDU.tests.service;
 
 import com.CollegeHUB.quizEDU.tests.dto.CreateTestRequest;
+import com.CollegeHUB.quizEDU.tests.dto.StudentTestResponse;
+import com.CollegeHUB.quizEDU.tests.dto.SubmitTestRequest;
 import com.CollegeHUB.quizEDU.tests.dto.TestResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +11,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/tests")
-
 public class TestControler {
     private final TestService testService;
 
@@ -28,5 +29,17 @@ public class TestControler {
     @ResponseStatus(HttpStatus.OK)
     public List<TestResponse> getAllTests() {
         return testService.getAllTests();
+    }
+
+    @GetMapping("/{id}/take")
+    public StudentTestResponse takeTest(@PathVariable Long id) {
+        return testService.getTestForStudent(id);
+    }
+
+    @PostMapping("/{id}/submit")
+    public int submitTest(@PathVariable Long id,
+                          @RequestParam Long studentId,
+                          @RequestBody SubmitTestRequest request) {
+        return testService.submitTest(id, studentId, request);
     }
 }

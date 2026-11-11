@@ -8,6 +8,7 @@ import com.CollegeHUB.quizEDU.tests.entity.Question;
 @Table(name = "answer_options")
 public class AnswerOption {
 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

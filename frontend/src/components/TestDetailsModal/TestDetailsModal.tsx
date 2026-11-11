@@ -2,9 +2,9 @@ import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Clock3, FileQuestion, PlayCircle, UsersRound, X } from 'lucide-react';
 import type { TestPreview } from '../../data/tests';
-import { getTestDetails } from '../../data/testDetails';
 import { testIcons } from '../TestCard/testIcons';
 import './TestDetailsModal.css';
+import { useNavigate } from 'react-router-dom';
 
 interface TestDetailsModalProps {
     test: TestPreview;
@@ -15,7 +15,7 @@ export default function TestDetailsModal({ test, onClose }: TestDetailsModalProp
     const dialogRef = useRef<HTMLDivElement>(null);
     const closeButtonRef = useRef<HTMLButtonElement>(null);
     const Icon = testIcons[test.icon];
-    const details = getTestDetails(test.id);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -63,17 +63,18 @@ export default function TestDetailsModal({ test, onClose }: TestDetailsModalProp
                 <div className="test-modal__category">{test.category}</div>
                 <h2 id="test-modal-title" className="test-modal__title">{test.title}</h2>
 
-                {details && (
-                    <div className="test-modal__stats" aria-label="Інформація про тест">
-                        <span><FileQuestion size={15} /> {details.questions} питань</span>
-                        <span><Clock3 size={15} /> ~{details.minutes} хв</span>
-                        <span><UsersRound size={15} /> {details.participants} учасників</span>
-                    </div>
-                )}
                 <div className="test-modal__divider" />
                 <p id="test-modal-description" className="test-modal__description">{test.description}</p>
-                <button type="button" className="test-modal__join">
-                    <PlayCircle size={18} strokeWidth={1.8} /> Приєднатися
+                <button
+                    type="button"
+                    className="test-modal__join"
+                    onClick={() => {
+                        onClose();
+                        navigate(`/tests/${test.id}/play`);
+                    }}
+                >
+                    <PlayCircle size={18} strokeWidth={1.8} />
+                    Приєднатися
                 </button>
             </div>
         </div>,
