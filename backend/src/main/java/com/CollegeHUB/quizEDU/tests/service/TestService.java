@@ -30,6 +30,12 @@ public class TestService {
 
     @Transactional
     public Long createTest(CreateTestRequest request, Long authorId) {
+        if (request.getTitle() == null || request.getTitle().isBlank()) {
+            throw new RuntimeException("Назва тесту обов'язкова!");
+        }
+        if (request.getDescription() == null || request.getDescription().isBlank()) {
+            throw new RuntimeException("Опис тесту обов'язковий!");
+        }
         if (request.getQuestions() == null || request.getQuestions().isEmpty()) {
             throw new RuntimeException("Тест має містити хоча б одне питання!");
         }
@@ -61,6 +67,7 @@ public class TestService {
         Test test = new Test();
         test.setTitle(request.getTitle());
         test.setDescription(request.getDescription());
+        test.setTag(request.getTag());
         test.setAuthor(author);
 
         for (var qDto : request.getQuestions()) {
@@ -88,7 +95,7 @@ public class TestService {
                 test.getAuthor() != null ? test.getAuthor().getFullName() : "Unknown",
                 test.getTitle(),
                 test.getDescription(),
-                null, // Заменить
+                test.getTag(),
                 test.getQuestions() != null ? test.getQuestions().size() : 0
         )).collect(Collectors.toList());
     }
