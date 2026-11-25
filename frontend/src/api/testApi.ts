@@ -1,5 +1,6 @@
 
 import type { TestPreview, TestColor } from '../data/tests';
+import { getStoredUser } from '../auth/authStorage';
 
 export interface TestOption {
     id: number;
@@ -104,13 +105,11 @@ export async function submitTest(
     totalQuestions: number
 ): Promise<SubmitTestResult> {
 
-    const studentId = Number(
-        import.meta.env.VITE_TEST_STUDENT_ID
-    );
+    const studentId = getStoredUser()?.id;
 
-    if (!Number.isSafeInteger(studentId) || studentId <= 0) {
+    if (!studentId) {
         throw new Error(
-            'Не налаштовано тестовий ID студента'
+            'Потрібно увійти в акаунт, щоб надіслати відповіді'
         );
     }
 

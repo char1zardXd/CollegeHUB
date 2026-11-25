@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import type { FormEvent } from 'react';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import {
     ArrowRight,
     BookOpen,
@@ -15,6 +16,8 @@ import {
     UserRound
 } from 'lucide-react';
 
+import { useAuth } from '../../auth/AuthContext';
+
 import './LoginPage.css';
 
 type AuthMode = 'login' | 'register';
@@ -27,8 +30,83 @@ export default function LoginPage({
                                       mode = 'login'
                                   }: LoginPageProps) {
     const [showPassword, setShowPassword] = useState(false);
+    const [fullName, setFullName] = useState('');
+    const [group, setGroup] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [remember, setRemember] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [submitting, setSubmitting] = useState(false);
+
+    const { user, login, register } = useAuth();
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const isRegister = mode === 'register';
+
+    if (user) {
+        return <Navigate to="/tests" replace />;
+    }
+
+    const redirectTo =
+        (location.state as { from?: string } | null)?.from ?? '/tests';
+
+    function validate(): string | null {
+        if (isRegister && fullName.trim().length === 0) {
+            return "Вкажіть повне ім'я та прізвище";
+        }
+        if (isRegister && !group) {
+            return 'Оберіть академічну групу';
+        }
+        if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
+            return 'Введіть коректну електронну пошту';
+        }
+        if (password.length === 0) {
+            return 'Введіть пароль';
+        }
+        if (isRegister && password.length < 8) {
+            return 'Пароль має містити щонайменше 8 символів';
+        }
+        return null;
+    }
+
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        if (submitting) return;
+
+        const validationError = validate();
+        if (validationError) {
+            setError(validationError);
+            return;
+        }
+
+        setError(null);
+        setSubmitting(true);
+
+        try {
+            if (isRegister) {
+                await register(
+                    {
+                        email: email.trim(),
+                        password,
+                        fullName: fullName.trim(),
+                        group
+                    },
+                    remember
+                );
+            } else {
+                await login(email.trim(), password, remember);
+            }
+            navigate(redirectTo, { replace: true });
+        } catch (err) {
+            setError(
+                err instanceof Error
+                    ? err.message
+                    : 'Сталася помилка. Спробуйте ще раз.'
+            );
+            setSubmitting(false);
+        }
+    }
 
     return (
         <div className="auth-page">
@@ -166,7 +244,8 @@ export default function LoginPage({
 
                         <form
                             className="auth-form"
-                            onSubmit={event => event.preventDefault()}
+                            onSubmit={handleSubmit}
+                            noValidate
                         >
 
                             {isRegister && (
@@ -182,6 +261,8 @@ export default function LoginPage({
                                             type="text"
                                             placeholder="Анастасія Василенко"
                                             autoComplete="name"
+                                            value={fullName}
+                                            onChange={e => setFullName(e.target.value)}
                                         />
                                     </div>
 
@@ -197,18 +278,19 @@ export default function LoginPage({
 
                                         <select
                                             id="auth-group"
-                                            defaultValue=""
+                                            value={group}
+                                            onChange={e => setGroup(e.target.value)}
                                         >
                                             <option value="" disabled>
                                                 Оберіть академічну групу
                                             </option>
-                                            <option value="kn31">
+                                            <option value="КН-31">
                                                 КН-31
                                             </option>
-                                            <option value="kn32">
+                                            <option value="КН-32">
                                                 КН-32
                                             </option>
-                                            <option value="kn302">
+                                            <option value="КН-302">
                                                 КН-302 (Комп'ютерні науки)
                                             </option>
                                         </select>
@@ -235,6 +317,8 @@ export default function LoginPage({
                                     type="email"
                                     placeholder="student@college.edu.ua"
                                     autoComplete="email"
+                                    value={email}
+                                    onChange={e => setEmail(e.target.value)}
                                 />
                             </div>
 
@@ -262,6 +346,8 @@ export default function LoginPage({
                                             ? 'new-password'
                                             : 'current-password'
                                     }
+                                    value={password}
+                                    onChange={e => setPassword(e.target.value)}
                                 />
 
                                 <button
@@ -282,21 +368,32 @@ export default function LoginPage({
                             </div>
 
                             <label className="auth-remember">
-                                <input type="checkbox" />
+                                <input
+                                    type="checkbox"
+                                    checked={remember}
+                                    onChange={e => setRemember(e.target.checked)}
+                                />
                                 <span>
                                     Запам'ятати мене на цьому пристрої
                                 </span>
                             </label>
 
+                            {error && (
+                                <p className="auth-error" role="alert">
+                                    {error}
+                                </p>
+                            )}
+
                             <button
                                 className="auth-submit"
                                 type="submit"
-                                disabled
-                                title="Авторизацію буде підключено пізніше"
+                                disabled={submitting}
                             >
-                                {isRegister
-                                    ? 'Зареєструватися'
-                                    : 'Увійти в CollegeHub'
+                                {submitting
+                                    ? 'Зачекайте...'
+                                    : isRegister
+                                        ? 'Зареєструватися'
+                                        : 'Увійти в CollegeHub'
                                 }
                                 <ArrowRight size={17} />
                             </button>

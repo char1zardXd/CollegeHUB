@@ -8,6 +8,7 @@ import TestPlayPage from './pages/TestPlayPage/TestPlayPage';
 import TestResultPage from './pages/TestResultPage/TestResultPage';
 import LandingPage from './pages/LandingPage/LandingPage';
 import LoginPage from './pages/LoginPage/LoginPage';
+import AuthProvider from './auth/AuthProvider';
 import './App.css';
 
 function Dashboard() {
@@ -38,6 +39,7 @@ function Dashboard() {
 export default function App() {
     return (
         <BrowserRouter>
+            <AuthProvider>
             <Routes>
                 <Route path="/welcome" element={<LandingPage />} />
                 <Route
@@ -61,6 +63,7 @@ export default function App() {
 
                 <Route path="/*" element={<Dashboard />} />
             </Routes>
+            </AuthProvider>
         </BrowserRouter>
     );
 }
