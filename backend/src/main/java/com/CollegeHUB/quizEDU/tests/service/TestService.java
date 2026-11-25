@@ -80,7 +80,7 @@ public class TestService {
         Test savedTest = testRepo.save(test);
         return savedTest.getId();
     }
-
+    @Transactional(readOnly = true)
     public List<TestResponse> getAllTests() {
         List<Test> tests = testRepo.findAll();
         return tests.stream().map(test -> new TestResponse(
@@ -92,7 +92,7 @@ public class TestService {
                 test.getQuestions() != null ? test.getQuestions().size() : 0
         )).collect(Collectors.toList());
     }
-
+    @Transactional(readOnly = true)
     public StudentTestResponse getTestForStudent(Long testId) {
         Test test = testRepo.findById(testId)
                 .orElseThrow(() -> new RuntimeException("Тест не знайдений"));
