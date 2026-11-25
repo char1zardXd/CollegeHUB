@@ -19,6 +19,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set lowercase owner
+        run: echo "OWNER_LOWER=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -36,7 +39,7 @@ jobs:
           context: ./backend
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/collegehub-backend:latest
+          tags: ${{ env.REGISTRY }}/${{ env.OWNER_LOWER }}/collegehub-backend:latest
 
       - name: Build and push Frontend
         uses: docker/build-push-action@v6
@@ -44,12 +47,15 @@ jobs:
           context: ./frontend
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/collegehub-frontend:latest
+          tags: ${{ env.REGISTRY }}/${{ env.OWNER_LOWER }}/collegehub-frontend:latest
 
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
+      - name: Set lowercase owner
+        run: echo "OWNER_LOWER=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: Copy docker-compose.yml to VPS
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -68,7 +74,7 @@ jobs:
           script: |
             cd ~/collegehub
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            export GITHUB_REPOSITORY_OWNER=${{ github.repository_owner }}
+            export GITHUB_REPOSITORY_OWNER=${{ env.OWNER_LOWER }}
             docker compose pull
             docker compose up -d
             docker image prune -f
