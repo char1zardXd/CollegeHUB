@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Clock3, FileQuestion, PlayCircle, UsersRound, X } from 'lucide-react';
+import { PlayCircle,X } from 'lucide-react';
 import type { TestPreview } from '../../data/tests';
 import { testIcons } from '../TestCard/testIcons';
 import './TestDetailsModal.css';
