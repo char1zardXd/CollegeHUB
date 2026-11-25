@@ -78,9 +78,12 @@ jobs:
           cache-to: type=gha,mode=max,scope=frontend
 
   deploy:
-    needs: [build-backend, build-frontend]
+    needs: [ build-backend, build-frontend ]
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Set lowercase owner
         run: echo "OWNER_LOWER=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
