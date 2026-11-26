@@ -1,6 +1,6 @@
 package com.CollegeHUB.quizEDU.news.entity;
 
-import com.CollegeHUB.quizEDU.auth.User;
+import com.CollegeHUB.quizEDU.auth.entity.User;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
