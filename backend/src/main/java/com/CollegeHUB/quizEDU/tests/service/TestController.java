@@ -11,10 +11,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/tests")
-public class TestControler {
+public class TestController {
     private final TestService testService;
 
-    public TestControler(TestService testService) {
+    public TestController(TestService testService) {
         this.testService = testService;
     }
 
