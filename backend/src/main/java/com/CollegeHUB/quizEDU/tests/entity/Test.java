@@ -1,6 +1,6 @@
 package com.CollegeHUB.quizEDU.tests.entity;
 
-import com.CollegeHUB.quizEDU.auth.User;
+import com.CollegeHUB.quizEDU.auth.entity.User;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;

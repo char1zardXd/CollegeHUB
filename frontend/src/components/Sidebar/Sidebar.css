@@ -52,8 +52,15 @@
     padding: 18px 15px 2px;
     color: #786c78;
     font-size: 14px;
-    cursor: default;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: inherit;
+    text-align: left;
+    width: 100%;
 }
+.sidebar-footer:hover { color: #a54d7d; }
+.sidebar-footer:focus-visible { outline: 2px solid #a54d7d; outline-offset: 2px; }
 
 @media (max-width: 700px) {
     .sidebar { padding-left: 10px; padding-right: 10px; }
