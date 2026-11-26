@@ -3,6 +3,7 @@ package com.CollegeHUB.quizEDU.news.controller;
 import com.CollegeHUB.quizEDU.news.dto.CreateNewsRequestDto;
 import com.CollegeHUB.quizEDU.news.dto.CreateNewsResponseDto;
 import com.CollegeHUB.quizEDU.news.servise.NewPostService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class NewPostController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CreateNewsResponseDto createNewPosts(@RequestBody CreateNewsRequestDto request,
+    public CreateNewsResponseDto createNewPosts(@Valid @RequestBody CreateNewsRequestDto request,
                                                 @RequestParam Long userId) {
         return newPostService.createNewPost(request, userId);
     }

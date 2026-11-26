@@ -31,20 +31,26 @@ public class NewPostService {
         User author = usersRepo.findById(userId).orElseThrow(() -> new RuntimeException("not found"));
 
         NewsPost post = new NewsPost();
-        post.setTitle(request.getTitle());
-        post.setVersion(request.getVersion());
+        post.setTitle(request.getTitle().trim());
+        post.setVersion(request.getVersion().trim());
         post.setAccentColor(request.getAccentColor());
         post.setIcon(request.getIcon());
-        post.setIntroText(request.getIntroText());
-        post.setHighlightedNote(request.getHighlightedNote());
+        post.setIntroText(request.getIntroText().trim());
+        post.setHighlightedNote(blankToNull(request.getHighlightedNote()));
         post.setPinned(request.isPinned());
         post.setAuthor(author);
 
         if (request.getChanges() != null) {
             for (NewsChangeDto changeDto : request.getChanges()) {
+                String changeTitle = changeDto.getTitle() == null ? "" : changeDto.getTitle().trim();
+                String changeDescription = changeDto.getDescription() == null ? "" : changeDto.getDescription().trim();
+
+                // порожні пункти списку змін не зберігаємо
+                if (changeTitle.isEmpty() && changeDescription.isEmpty()) continue;
+
                 NewsChange change = new NewsChange();
-                change.setTitle(changeDto.getTitle());
-                change.setDescription(changeDto.getDescription());
+                change.setTitle(changeTitle);
+                change.setDescription(changeDescription);
 
                 post.addChange(change);
             }
@@ -107,5 +113,9 @@ public class NewPostService {
                 post.getIntroText(),
                 post.getHighlightedNote()
         );
+    }
+
+    private static String blankToNull(String value) {
+        return value == null || value.isBlank() ? null : value.trim();
     }
 }

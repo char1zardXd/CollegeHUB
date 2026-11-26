@@ -1,12 +1,23 @@
 package com.CollegeHUB.quizEDU.news.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 import java.util.List;
 
 public class CreateNewsRequestDto {
+    @NotBlank(message = "Заголовок обов'язковий")
+    @Size(max = 255)
     private String title;
+
+    @NotBlank(message = "Версія обов'язкова")
+    @Size(max = 255)
     private String version;
+
     private String accentColor;
     private String icon;
+
+    @NotBlank(message = "Вступний опис обов'язковий")
     private String introText;
     private String highlightedNote;
     private boolean isPinned;

@@ -42,6 +42,7 @@ public class NewsPost {
     private User author;
 
     @OneToMany(mappedBy = "newsPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("id ASC")
     private List<NewsChange> changes = new ArrayList<>();
 
     @PrePersist

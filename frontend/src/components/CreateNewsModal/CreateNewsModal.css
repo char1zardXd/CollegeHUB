@@ -370,7 +370,22 @@
     box-shadow: 0 6px 14px rgba(135, 69, 111, .22);
 }
 
-.news-modal-publish:hover { background: #78375f; }
+.news-modal-publish:hover:not(:disabled) { background: #78375f; }
+.news-modal .news-modal-publish:disabled,
+.news-modal .news-modal-cancel:disabled { opacity: .6; cursor: not-allowed; }
+
+.news-modal-error {
+    flex: none;
+    margin: 0 35px;
+    padding: 10px 14px;
+    border: 1px solid #f6d6d3;
+    border-radius: 12px;
+    background: #fdf1f0;
+    color: #b3261e;
+    font-size: 13px;
+    font-weight: 650;
+}
+
 
 /* Попередній перегляд */
 
@@ -538,6 +553,7 @@
     .news-modal-fields { padding: 18px; }
     .news-modal-row { grid-template-columns: minmax(0, 1fr); gap: 18px; }
     .news-modal-footer { margin: 0 18px; padding-bottom: 18px; }
+    .news-modal-error { margin: 0 18px; }
     .news-modal-publish { padding: 0 18px; }
     .news-modal-preview { padding: 20px 18px; }
 }
