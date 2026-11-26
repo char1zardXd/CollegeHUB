@@ -10,6 +10,7 @@ import LandingPage from './pages/LandingPage/LandingPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import AuthProvider from './auth/AuthProvider';
 import UpdatesPage from './pages/UpdatesPage/UpdatesPage';
+import FlashcardsPage from './pages/FlashcardsPage/FlashcardsPage';
 import { whatsNewRoute } from './navigation';
 import './App.css';
 
@@ -28,6 +29,7 @@ function Dashboard() {
                             <Route path="/" element={<Navigate to="/tests" replace />} />
                             <Route path="/welcome" element={<LandingPage />} />
                             <Route path="/tests" element={<TestPage />} />
+                            <Route path="/flashcards" element={<FlashcardsPage />} />
                             <Route path="/my-learning" element={<EmptyPage />} />
                             <Route path="/courses" element={<EmptyPage />} />
                             <Route path="/calendar" element={<EmptyPage />} />
