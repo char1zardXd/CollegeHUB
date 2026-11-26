@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/flashcard")
 public class FlashCardController {
-    @GetMapping
-    public CreateCardResponse createCard (@RequestBody CreateCardRequest request) {
-        return createCard(request);
-    }
+//    @GetMapping
+//    public CreateCardResponse createCards (@RequestBody CreateCardRequest request) {
+//        return createCard(request);
+//    }
 }
