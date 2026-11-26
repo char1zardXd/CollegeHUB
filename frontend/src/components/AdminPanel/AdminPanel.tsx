@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     BookOpen,
     Calendar,
@@ -10,6 +11,7 @@ import {
 } from 'lucide-react';
 
 import { useAuth } from '../../auth/AuthContext';
+import { whatsNewRoute } from '../../navigation';
 import CreateNewsModal from '../CreateNewsModal/CreateNewsModal';
 import './AdminPanel.css';
 
@@ -27,7 +29,9 @@ const adminActions = [
 export default function AdminPanel() {
     const { user } = useAuth();
     const [isNewsModalOpen, setNewsModalOpen] = useState(false);
+    const navigate = useNavigate();
     const closeNewsModal = useCallback(() => setNewsModalOpen(false), []);
+    const handleNewsCreated = useCallback(() => navigate(whatsNewRoute), [navigate]);
 
     if (!user || !allowedRoles.includes(user.role)) return null;
 
@@ -52,7 +56,7 @@ export default function AdminPanel() {
                 ))}
             </div>
 
-            {isNewsModalOpen && <CreateNewsModal onClose={closeNewsModal} />}
+            {isNewsModalOpen && <CreateNewsModal onClose={closeNewsModal} onCreated={handleNewsCreated} />}
         </section>
     );
 }

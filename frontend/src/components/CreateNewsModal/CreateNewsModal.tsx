@@ -4,25 +4,24 @@ import { createPortal } from 'react-dom';
 import {
     Check,
     Eye,
-    GraduationCap,
     Info,
     LayoutList,
     ListChecks,
-    Megaphone,
     Pin,
     Plus,
-    Rocket,
     Send,
-    Sparkles,
     Trash2,
-    Wrench,
     X
 } from 'lucide-react';
 
+import { createNews } from '../../api/newsApi';
+import { accentColors, cardIcons } from '../../data/newsOptions';
+import type { AccentId, IconId } from '../../data/newsOptions';
 import './CreateNewsModal.css';
 
 type CreateNewsModalProps = {
     onClose: () => void;
+    onCreated?: () => void;
 };
 
 type DraftChange = {
@@ -30,24 +29,6 @@ type DraftChange = {
     title: string;
     description: string;
 };
-
-const accentColors = [
-    { id: 'release', label: 'Реліз', value: '#87456f' },
-    { id: 'announce', label: 'Анонс', value: '#3b82f6' },
-    { id: 'fix', label: 'Фікс', value: '#10b981' },
-    { id: 'important', label: 'Важливо', value: '#f59e0b' }
-] as const;
-
-const cardIcons = [
-    { id: 'rocket', label: 'Ракета', icon: Rocket },
-    { id: 'sparkles', label: 'Іскри', icon: Sparkles },
-    { id: 'megaphone', label: 'Мегафон', icon: Megaphone },
-    { id: 'wrench', label: 'Ключ', icon: Wrench },
-    { id: 'education', label: 'Навчання', icon: GraduationCap }
-] as const;
-
-type AccentId = (typeof accentColors)[number]['id'];
-type IconId = (typeof cardIcons)[number]['id'];
 
 const MAX_CHANGES = 20;
 
@@ -63,7 +44,7 @@ function accentStyle(color: string): CSSProperties {
     return { '--accent': color } as CSSProperties;
 }
 
-export default function CreateNewsModal({ onClose }: CreateNewsModalProps) {
+export default function CreateNewsModal({ onClose, onCreated }: CreateNewsModalProps) {
     const dialogRef = useRef<HTMLDivElement>(null);
     const titleRef = useRef<HTMLInputElement>(null);
     const nextChangeKey = useRef(initialChanges.length + 1);
@@ -77,6 +58,8 @@ export default function CreateNewsModal({ onClose }: CreateNewsModalProps) {
     const [noteEnabled, setNoteEnabled] = useState(false);
     const [note, setNote] = useState('');
     const [pinned, setPinned] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const accent = accentColors.find(color => color.id === accentId) ?? accentColors[0];
     const PreviewIcon = (cardIcons.find(item => item.id === iconId) ?? cardIcons[0]).icon;
@@ -126,6 +109,53 @@ export default function CreateNewsModal({ onClose }: CreateNewsModalProps) {
 
     function removeChange(key: number) {
         setChanges(prev => prev.filter(change => change.key !== key));
+    }
+
+    async function handlePublish() {
+        if (submitting) return;
+
+        const cleanTitle = title.trim();
+        const cleanVersion = version.trim();
+        const cleanIntro = intro.trim();
+
+        if (!cleanTitle) {
+            setError('Введіть заголовок релізу');
+            titleRef.current?.focus();
+            return;
+        }
+        if (!cleanVersion) {
+            setError('Вкажіть версію або тег');
+            return;
+        }
+        if (!cleanIntro) {
+            setError('Додайте вступний опис');
+            return;
+        }
+
+        setError(null);
+        setSubmitting(true);
+
+        try {
+            await createNews({
+                title: cleanTitle,
+                version: cleanVersion,
+                accentColor: accent.value,
+                icon: iconId,
+                introText: cleanIntro,
+                highlightedNote: noteEnabled && note.trim() ? note.trim() : null,
+                pinned,
+                changes: previewChanges.map(change => ({
+                    title: change.title.trim(),
+                    description: change.description.trim()
+                }))
+            });
+
+            onCreated?.();
+            onClose();
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Не вдалося опублікувати новину');
+            setSubmitting(false);
+        }
     }
 
     return createPortal(
@@ -317,6 +347,10 @@ export default function CreateNewsModal({ onClose }: CreateNewsModalProps) {
                             </section>
                         </div>
 
+                        {error && (
+                            <p className="news-modal-error" role="alert">{error}</p>
+                        )}
+
                         <footer className="news-modal-footer">
                             <label className="news-modal-toggle news-modal-toggle--pin">
                                 <input
@@ -327,13 +361,17 @@ export default function CreateNewsModal({ onClose }: CreateNewsModalProps) {
                                 Закріпити вгорі стрічки
                             </label>
                             <div className="news-modal-actions">
-                                <button type="button" className="news-modal-cancel" onClick={onClose}>
+                                <button type="button" className="news-modal-cancel" onClick={onClose} disabled={submitting}>
                                     Скасувати
                                 </button>
-                                {/* Публікацію ще не підключено: кнопка навмисно без обробника */}
-                                <button type="button" className="news-modal-publish">
+                                <button
+                                    type="button"
+                                    className="news-modal-publish"
+                                    onClick={handlePublish}
+                                    disabled={submitting}
+                                >
                                     <Send size={17} aria-hidden="true" />
-                                    Опублікувати
+                                    {submitting ? 'Публікація...' : 'Опублікувати'}
                                 </button>
                             </div>
                         </footer>

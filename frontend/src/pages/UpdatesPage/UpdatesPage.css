@@ -54,8 +54,8 @@
     width: 42px;
     height: 42px;
     border-radius: 12px;
-    background: #f6ecf1;
-    color: #8f3f68;
+    background: color-mix(in srgb, var(--accent, #8f3f68) 12%, white);
+    color: var(--accent, #8f3f68);
 }
 
 .update-card-heading {
@@ -75,11 +75,26 @@
     display: inline-block;
     padding: 1px 8px;
     border-radius: 6px;
-    background: #f6ecf1;
-    color: #8f3f68;
+    background: color-mix(in srgb, var(--accent, #8f3f68) 12%, white);
+    color: var(--accent, #8f3f68);
     font-size: 11px;
     font-weight: 600;
 }
+
+.update-card-pinned {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-right: 6px;
+    padding: 1px 8px;
+    border-radius: 6px;
+    background: #f3f4f6;
+    color: #4d5560;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.update-card-pinned svg { fill: currentColor; }
 
 .update-card-date {
     flex-shrink: 0;
@@ -95,6 +110,7 @@
 
 .update-card-lead {
     margin: 18px 0 14px;
+    white-space: pre-line;
     font-size: 14px;
     line-height: 21px;
     font-weight: 600;
@@ -117,7 +133,7 @@
     color: #2c3340;
 }
 
-.update-card-subtitle svg { color: #8f3f68; fill: #8f3f68; }
+.update-card-subtitle svg { color: var(--accent, #8f3f68); fill: var(--accent, #8f3f68); }
 
 .update-card-list {
     display: flex;
@@ -151,6 +167,40 @@
     line-height: 20px;
     color: #7c7f88;
 }
+
+.update-card-note {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+    padding: 12px 14px;
+    border-left: 3px solid var(--accent, #8f3f68);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--accent, #8f3f68) 8%, white);
+}
+
+.update-card-note svg { flex-shrink: 0; margin-top: 2px; color: var(--accent, #8f3f68); }
+
+.update-card-note p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 19px;
+    color: #3f4754;
+    white-space: pre-line;
+}
+
+.update-card-author {
+    margin: 18px 0 0;
+    font-size: 12px;
+    color: #9a9da6;
+}
+
+.updates-status {
+    margin: 0 16px 20px;
+    font-size: 14px;
+    color: #7c7f88;
+}
+
+.updates-status--error { color: #b3261e; font-weight: 600; }
 
 @media (max-width: 700px) {
     .updates-page { padding: 16px 12px 32px; }
