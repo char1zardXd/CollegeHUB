@@ -1,4 +1,3 @@
-
 import type { TestPreview, TestColor } from '../data/tests';
 import { getStoredUser } from '../auth/authStorage';
 
@@ -25,6 +24,16 @@ export interface SubmitTestResult {
     correctAnswers: number;
     totalQuestions: number;
     percentage: number;
+}
+
+export interface CreateTestPayload {
+    title: string;
+    description: string;
+    tag: string | null;
+    questions: {
+        text: string;
+        options: { text: string; correct: boolean }[];
+    }[];
 }
 
 interface TestListItem {
@@ -159,4 +168,48 @@ export async function submitTest(
         totalQuestions,
         percentage
     };
+}
+
+export async function createTest(
+    payload: CreateTestPayload
+): Promise<number> {
+
+    const authorId = getStoredUser()?.id;
+
+    if (!authorId) {
+        throw new Error(
+            'Потрібно увійти в акаунт, щоб створити тест'
+        );
+    }
+
+    let response: Response;
+
+    try {
+        response = await fetch(
+            `/api/tests?authorId=${authorId}`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            }
+        );
+    } catch {
+        throw new Error('Немає зв\'язку із сервером. Спробуйте ще раз');
+    }
+
+    if (!response.ok) {
+        throw new Error(
+            `Не вдалося створити тест (${response.status})`
+        );
+    }
+
+    const id: unknown = await response.json();
+
+    if (typeof id !== 'number') {
+        throw new Error('Некоректна відповідь сервера');
+    }
+
+    return id;
 }

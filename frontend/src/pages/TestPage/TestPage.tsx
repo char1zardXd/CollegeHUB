@@ -20,6 +20,7 @@ export default function TestPage() {
         useState<TestPreview | null>(null);
 
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [reloadKey, setReloadKey] = useState(0);
 
     const closeTestModal = useCallback(
         () => setSelectedTest(null),
@@ -30,6 +31,12 @@ export default function TestPage() {
         () => setShowCreateModal(false),
         []
     );
+
+    const handleTestCreated = useCallback(() => {
+        setError(null);
+        setLoading(true);
+        setReloadKey(key => key + 1);
+    }, []);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -54,7 +61,7 @@ export default function TestPage() {
             });
 
         return () => controller.abort();
-    }, []);
+    }, [reloadKey]);
 
     return (
         <section
@@ -112,6 +119,7 @@ export default function TestPage() {
             {showCreateModal && (
                 <CreateTestModal
                     onClose={closeCreateModal}
+                    onCreated={handleTestCreated}
                 />
             )}
         </section>
