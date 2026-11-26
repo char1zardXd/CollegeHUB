@@ -49,6 +49,11 @@ public class NewsPost {
         this.createdAt = LocalDateTime.now();
     }
 
+    public void addChange(NewsChange change) {
+        changes.add(change);
+        change.setNewsPost(this);
+    }
+
     public NewsPost() {
     }
 
