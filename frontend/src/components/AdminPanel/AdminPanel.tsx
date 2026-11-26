@@ -1,3 +1,4 @@
+import { useCallback, useState } from 'react';
 import {
     BookOpen,
     Calendar,
@@ -9,6 +10,7 @@ import {
 } from 'lucide-react';
 
 import { useAuth } from '../../auth/AuthContext';
+import CreateNewsModal from '../CreateNewsModal/CreateNewsModal';
 import './AdminPanel.css';
 
 const allowedRoles = ['STUDENT'];
@@ -24,6 +26,8 @@ const adminActions = [
 
 export default function AdminPanel() {
     const { user } = useAuth();
+    const [isNewsModalOpen, setNewsModalOpen] = useState(false);
+    const closeNewsModal = useCallback(() => setNewsModalOpen(false), []);
 
     if (!user || !allowedRoles.includes(user.role)) return null;
 
@@ -40,12 +44,15 @@ export default function AdminPanel() {
                         key={id}
                         type="button"
                         className={`admin-panel-button${id === 'news' ? ' primary' : ''}`}
+                        onClick={id === 'news' ? () => setNewsModalOpen(true) : undefined}
                     >
                         <Icon size={17} strokeWidth={1.6} aria-hidden="true" />
                         <span>{title}</span>
                     </button>
                 ))}
             </div>
+
+            {isNewsModalOpen && <CreateNewsModal onClose={closeNewsModal} />}
         </section>
     );
 }
