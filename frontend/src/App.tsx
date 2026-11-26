@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
 import Header from './components/Header/Header';
 import Sidebar from './components/Sidebar/Sidebar';
@@ -9,15 +9,19 @@ import TestResultPage from './pages/TestResultPage/TestResultPage';
 import LandingPage from './pages/LandingPage/LandingPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import AuthProvider from './auth/AuthProvider';
+import UpdatesPage from './pages/UpdatesPage/UpdatesPage';
+import { whatsNewRoute } from './navigation';
 import './App.css';
 
 function Dashboard() {
+    const { pathname } = useLocation();
+    const showHeader = pathname !== whatsNewRoute;
     return (
             <div className="app-shell">
                 <Sidebar />
 
                 <div className="workspace">
-                    <Header />
+                    {showHeader && <Header />}
 
                     <main className="main-content" id="main-content">
                         <Routes>
@@ -29,6 +33,7 @@ function Dashboard() {
                             <Route path="/calendar" element={<EmptyPage />} />
                             <Route path="/analytics" element={<EmptyPage />} />
                             <Route path="/profile" element={<EmptyPage />} />
+                            <Route path={whatsNewRoute} element={<UpdatesPage />} />
                             <Route path="*" element={<Navigate to="/tests" replace />} />
                         </Routes>
                     </main>

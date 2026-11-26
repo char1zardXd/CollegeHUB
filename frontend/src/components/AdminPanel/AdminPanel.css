@@ -1,0 +1,57 @@
+.admin-panel {
+    flex-shrink: 0;
+    margin: 0 -8px;
+    padding: 6px 4px;
+    border: 1px solid #d3a9c0;
+    border-radius: 12px;
+    background: #e9e5e7;
+}
+
+.admin-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 8px;
+    padding: 0 4px;
+    color: #a54d7d;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 18px;
+    text-transform: uppercase;
+}
+
+.admin-panel-title svg { flex-shrink: 0; fill: #a54d7d; stroke: #ffffff; }
+
+.admin-panel-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 6px;
+}
+
+.admin-panel-button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    min-height: 28px;
+    padding: 4px 6px 4px 10px;
+    border-radius: 14px;
+    background: #ffffff;
+    color: #241925;
+    font-size: 12px;
+    line-height: 16px;
+    border: none;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background 140ms ease, color 140ms ease;
+}
+
+.admin-panel-button svg { flex-shrink: 0; color: #a54d7d; }
+.admin-panel-button:hover:not(.primary) { background: #f4edf1; }
+.admin-panel-button.primary { background: #a54d7d; color: #ffffff; }
+.admin-panel-button.primary svg { color: #ffffff; }
+.admin-panel-button:focus-visible { outline: 2px solid #a54d7d; outline-offset: 2px; }
+
+@media (max-width: 700px) {
+    .admin-panel { margin: 0 -4px; }
+}

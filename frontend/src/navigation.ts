@@ -7,3 +7,4 @@ export const navigationItems = [
 ] as const;
 
 export const profileRoute = '/profile';
+export const whatsNewRoute = '/whats-new';

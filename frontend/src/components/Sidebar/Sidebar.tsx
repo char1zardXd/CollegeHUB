@@ -1,7 +1,8 @@
 import { LogOut } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { navigationItems } from "../../navigation";
+import { navigationItems, whatsNewRoute } from "../../navigation";
 import { useAuth } from '../../auth/AuthContext';
+import AdminPanel from '../AdminPanel/AdminPanel';
 import './Sidebar.css';
 
 export default function Sidebar() {
@@ -27,10 +28,21 @@ export default function Sidebar() {
                     </NavLink>
                 ))}
             </nav>
-            <button type="button" className="sidebar-footer" onClick={handleLogout}>
-                <LogOut size={18} strokeWidth={1.9} aria-hidden="true" />
-                <span>Вийти</span>
-            </button>
+            <div className="sidebar-bottom">
+                <AdminPanel />
+                <div className="sidebar-actions">
+                    <NavLink
+                        to={whatsNewRoute}
+                        className={({ isActive }) => `sidebar-link${isActive ? ' active' : ''}`}
+                    >
+                        Що нового
+                    </NavLink>
+                    <button type="button" className="sidebar-footer" onClick={handleLogout}>
+                        <LogOut size={18} strokeWidth={1.9} aria-hidden="true" />
+                        <span>Вийти</span>
+                    </button>
+                </div>
+            </div>
         </aside>
     );
 }

@@ -1,5 +1,6 @@
 .sidebar {
-    min-height: 100vh;
+    min-height: 0;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     background: #e4dadf;
@@ -44,8 +45,21 @@
 .sidebar-link.active { background: #a54d7d; color: #ffffff; }
 .sidebar-link:focus-visible, .sidebar-brand:focus-visible { outline: 2px solid #a54d7d; outline-offset: 3px; }
 
-.sidebar-footer {
+.sidebar-bottom {
     margin-top: auto;
+    padding-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sidebar-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sidebar-footer {
     display: flex;
     align-items: center;
     gap: 10px;
