@@ -15,7 +15,7 @@ export interface FlashDeck {
     category: FlashcardCategory;
     description: string;
     owned: boolean;
-    cards: Flashcard[];
+    cards: Flashcards[];
 }
 
 export const flashcardCategories: { value: FlashcardCategory; label: string }[] = [
