@@ -7,6 +7,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class CardCheckResultDto {
     private Long cardId;
-    private boolean isCorrect;
+    private boolean correct;
     private String expectedAnswer;
 }

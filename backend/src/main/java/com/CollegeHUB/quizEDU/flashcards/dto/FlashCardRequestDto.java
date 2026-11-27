@@ -10,12 +10,10 @@ public class FlashCardRequestDto {
     @NotBlank
     private String frontText;
 
-    @NotBlank
     private String frontSubText;
 
     @NotBlank
     private String answer;
 
-    @NotBlank
     private String detail;
 }

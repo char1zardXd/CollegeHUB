@@ -3,8 +3,6 @@ import { AlertCircle, ArrowLeft, ArrowRight, CheckCircle2, Hand, Lightbulb } fro
 
 import type { FlashDeck } from '../../data/flashcards';
 
-const MAX_REVEALS = 2;
-
 interface StudyViewProps {
     deck: FlashDeck;
     onBack: () => void;
@@ -17,6 +15,7 @@ export default function StudyView({ deck, onBack }: StudyViewProps) {
     const [known, setKnown] = useState<Set<number>>(() => new Set());
     const [limitHit, setLimitHit] = useState(false);
 
+    const maxReveals = deck.maxFlips;
     const card = deck.cards[index];
     const revealCount = reveals[card.id] ?? 0;
     const isFirst = index === 0;
@@ -33,7 +32,7 @@ export default function StudyView({ deck, onBack }: StudyViewProps) {
             setFlipped(false);
             return;
         }
-        if (revealCount >= MAX_REVEALS) {
+        if (revealCount >= maxReveals) {
             setLimitHit(true);
             return;
         }
@@ -85,8 +84,8 @@ export default function StudyView({ deck, onBack }: StudyViewProps) {
             >
                 <span className="fc-card__label">{flipped ? 'Значення / переклад' : 'Термін / слово'}</span>
                 {!flipped && (
-                    <span className={`fc-pill fc-pill--tiny${revealCount >= MAX_REVEALS ? ' fc-pill--danger' : ''}`}>
-                        Ліміт переглядів: {revealCount} / {MAX_REVEALS}
+                    <span className={`fc-pill fc-pill--tiny${revealCount >= maxReveals ? ' fc-pill--danger' : ''}`}>
+                        Ліміт переглядів: {revealCount} / {maxReveals}
                     </span>
                 )}
                 <span className="fc-card__main">{flipped ? card.translation : card.term}</span>
@@ -103,7 +102,7 @@ export default function StudyView({ deck, onBack }: StudyViewProps) {
                 <div className="fc-alert" role="alert">
                     <AlertCircle size={16} />
                     <span>
-                        Ви вже переглядали цю картку {MAX_REVEALS} рази! Спробуйте згадати переклад
+                        Ви вже переглядали цю картку {maxReveals} рази! Спробуйте згадати переклад
                         самостійно або перейдіть до перевірки знань.
                     </span>
                 </div>

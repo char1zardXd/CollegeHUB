@@ -20,7 +20,7 @@ public class FlashCardController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public DecksResponseDto createNewDeck(@RequestBody DecksRequestDto request, @RequestParam Long userId) {
+    public DecksResponseDto createNewDeck(@Valid @RequestBody DecksRequestDto request, @RequestParam Long userId) {
         return flashCardService.createNewDecks(request, userId);
     }
 
@@ -33,7 +33,7 @@ public class FlashCardController {
     public CheckDeckResponse checkDeck (
             @PathVariable Long deckId,
             @Valid @RequestBody CheckDeckRequest request
-            ) {
+    ) {
         return flashCardService.checkDeck(deckId, request);
     }
 }
