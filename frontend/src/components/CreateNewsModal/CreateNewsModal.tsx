@@ -35,8 +35,8 @@ const MAX_CHANGES = 20;
 const initialChanges: DraftChange[] = [
     {
         key: 1,
-        title: 'Новий функціонал',
-        description: 'Короткий опис того, як це покращить навчання'
+        title: '',
+        description: ''
     }
 ];
 
@@ -293,7 +293,7 @@ export default function CreateNewsModal({ onClose, onCreated }: CreateNewsModalP
                                             <input
                                                 className="news-modal-change-title"
                                                 aria-label={`Назва пункту ${index + 1}`}
-                                                placeholder="Назва зміни"
+                                                placeholder="Новий функціонал"
                                                 maxLength={255}
                                                 value={change.title}
                                                 onChange={(e) => updateChange(change.key, { title: e.target.value })}
@@ -301,7 +301,7 @@ export default function CreateNewsModal({ onClose, onCreated }: CreateNewsModalP
                                             <input
                                                 className="news-modal-change-description"
                                                 aria-label={`Опис пункту ${index + 1}`}
-                                                placeholder="Короткий опис зміни"
+                                                placeholder="Короткий опис функціоналу"
                                                 value={change.description}
                                                 onChange={(e) => updateChange(change.key, { description: e.target.value })}
                                             />
