@@ -8,12 +8,14 @@ import com.CollegeHUB.quizEDU.flashcards.entity.FlashCard;
 import com.CollegeHUB.quizEDU.flashcards.repository.DeckRepo;
 import com.CollegeHUB.quizEDU.flashcards.repository.FlashcardRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+import java.util.Arrays;
 
 @RequiredArgsConstructor
 @Service
@@ -24,7 +26,8 @@ public class FlashCardService {
 
     @Transactional
     public DecksResponseDto createNewDecks(DecksRequestDto request, Long userId) {
-        User author = usersRepo.findById(userId).orElseThrow(() -> new RuntimeException("not found"));
+        User author = usersRepo.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Користувача не знайдено"));
 
         Deck deck = new Deck();
         deck.setAuthor(author);
@@ -71,6 +74,7 @@ public class FlashCardService {
 
         return new DecksResponseDto(
                 deck.getId(),
+                deck.getAuthor().getId(),
                 deck.getAuthor().getFullName(),
                 deck.getTitle(),
                 deck.getTopic(),
@@ -81,7 +85,8 @@ public class FlashCardService {
 
     @Transactional
     public CheckDeckResponse checkDeck(Long deckId, CheckDeckRequest request) {
-        Deck deck = deckRepo.findById(deckId).orElseThrow(() -> new RuntimeException("not found"));
+        Deck deck = deckRepo.findById(deckId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Набір не знайдено"));
 
         int totalCount = deck.getCards().size();
         int correctCount = 0;
@@ -90,7 +95,7 @@ public class FlashCardService {
         for(FlashCard card : deck.getCards()) {
             String userAnswer = "";
             for(CardAnswerDto ans : request.getAnswers()) {
-                if(ans.getCardId().equals(card.getId())) {
+                if(card.getId().equals(ans.getCardId())) {
                     if(ans.getUserAnswer() != null) {
                         userAnswer = ans.getUserAnswer();
                     }
@@ -98,10 +103,7 @@ public class FlashCardService {
                 }
             }
 
-            String cleanExpected = card.getAnswer().trim().toLowerCase();
-            String cleanUser = userAnswer.trim().toLowerCase();
-
-            boolean isCorrect = cleanExpected.equals(cleanUser);
+            boolean isCorrect = isAnswerCorrect(card.getAnswer(), userAnswer);
 
             if(isCorrect) {
                 correctCount++;
@@ -112,5 +114,23 @@ public class FlashCardService {
         double percentage = totalCount > 0 ? (correctCount * 100.0) / totalCount : 0.0;
 
         return new CheckDeckResponse(totalCount, correctCount, percentage, results);
+    }
+    
+    private boolean isAnswerCorrect(String expected, String given) {
+        String cleanGiven = normalize(given);
+        if (cleanGiven.isEmpty()) {
+            return false;
+        }
+        if (cleanGiven.equals(normalize(expected))) {
+            return true;
+        }
+        return Arrays.stream(expected.split("[/,;]"))
+                .map(this::normalize)
+                .filter(v -> !v.isEmpty())
+                .anyMatch(cleanGiven::equals);
+    }
+
+    private String normalize(String value) {
+        return value == null ? "" : value.trim().toLowerCase().replace('\'', '’').replaceAll("\\s+", " ");
     }
 }

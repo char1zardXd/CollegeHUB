@@ -9,6 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 public class DecksResponseDto {
     private Long id;
+    private Long authorId;
     private String author;
     private String title;
     private String topic;

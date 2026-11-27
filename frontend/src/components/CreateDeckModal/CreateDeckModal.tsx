@@ -3,12 +3,13 @@ import { createPortal } from 'react-dom';
 import { Layers, Plus, Trash2, X } from 'lucide-react';
 
 import { flashcardCategories } from '../../data/flashcards';
-import type { FlashDeck, FlashcardCategory } from '../../data/flashcards';
+import type { FlashcardCategory } from '../../data/flashcards';
+import type { CreateDeckPayload } from '../../api/flashcardsApi';
 import './CreateDeckModal.css';
 
 interface CreateDeckModalProps {
     onClose: () => void;
-    onCreate: (deck: Omit<FlashDeck, 'id'>) => void;
+    onCreate: (deck: CreateDeckPayload) => Promise<void>;
 }
 
 interface DraftCard {
@@ -30,6 +31,7 @@ export default function CreateDeckModal({ onClose, onCreate }: CreateDeckModalPr
     const [title, setTitle] = useState('');
     const [cards, setCards] = useState<DraftCard[]>(() => [emptyCard()]);
     const [error, setError] = useState<string | null>(null);
+    const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
         const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -51,25 +53,29 @@ export default function CreateDeckModal({ onClose, onCreate }: CreateDeckModalPr
         setCards(prev => prev.map(c => (c.key === key ? { ...c, ...patch } : c)));
     }
 
-    function handleSubmit() {
+    async function handleSubmit() {
         const filled = cards.filter(c => c.term.trim() && c.translation.trim());
         if (!title.trim()) return setError('Вкажіть назву колоди.');
         if (!category) return setError('Оберіть категорію.');
         if (filled.length === 0) return setError('Додайте хоча б одну картку з терміном і перекладом.');
 
-        onCreate({
-            title: title.trim(),
-            category,
-            description: `Власний набір: ${filled.length} карток.`,
-            owned: true,
-            cards: filled.map((c, i) => ({
-                id: i + 1,
-                term: c.term.trim(),
-                translation: c.translation.trim(),
-                transcription: c.transcription.trim() || undefined,
-                example: c.example.trim() || undefined,
-            })),
-        });
+        setError(null);
+        setSubmitting(true);
+        try {
+            await onCreate({
+                title: title.trim(),
+                category,
+                cards: filled.map(c => ({
+                    term: c.term.trim(),
+                    translation: c.translation.trim(),
+                    transcription: c.transcription.trim() || undefined,
+                    example: c.example.trim() || undefined,
+                })),
+            });
+        } catch (e) {
+            setError(e instanceof Error ? e.message : 'Не вдалося створити набір');
+            setSubmitting(false);
+        }
     }
 
     return createPortal(
@@ -132,7 +138,9 @@ export default function CreateDeckModal({ onClose, onCreate }: CreateDeckModalPr
 
                 <div className="deck-modal__footer">
                     <button type="button" className="deck-btn deck-btn--ghost" onClick={onClose}>Скасувати</button>
-                    <button type="button" className="deck-btn deck-btn--primary" onClick={handleSubmit}>✓ Зберегти та вивчити</button>
+                    <button type="button" className="deck-btn deck-btn--primary" onClick={handleSubmit} disabled={submitting}>
+                        {submitting ? 'Збереження…' : '✓ Зберегти та вивчити'}
+                    </button>
                 </div>
             </div>
         </div>,

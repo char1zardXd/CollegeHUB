@@ -33,6 +33,7 @@ public class Deck {
     }
 
     public void addCard(FlashCard card) {
+        card.setDeck(this);
         cards.add(card);
     }
 

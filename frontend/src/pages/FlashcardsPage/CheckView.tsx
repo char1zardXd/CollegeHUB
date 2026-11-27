@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { ArrowLeft, CheckCheck, RotateCcw } from 'lucide-react';
+import { AlertCircle, ArrowLeft, CheckCheck, RotateCcw } from 'lucide-react';
 
+import { checkDeck } from '../../api/flashcardsApi';
+import type { CheckDeckResult } from '../../api/flashcardsApi';
 import type { FlashDeck } from '../../data/flashcards';
 
 interface CheckViewProps {
@@ -8,27 +10,36 @@ interface CheckViewProps {
     onBack: () => void;
 }
 
-function normalize(value: string) {
-    return value.trim().toLowerCase().replace(/[’']/g, '’').replace(/\s+/g, ' ');
-}
-
-function isCorrect(answer: string, translation: string) {
-    const given = normalize(answer);
-    if (!given) return false;
-    return translation.split(/[\/,;]/).map(normalize).filter(Boolean).includes(given);
-}
-
 export default function CheckView({ deck, onBack }: CheckViewProps) {
     const [answers, setAnswers] = useState<Record<number, string>>({});
-    const [checked, setChecked] = useState(false);
+    const [result, setResult] = useState<CheckDeckResult | null>(null);
+    const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const total = deck.cards.length;
-    const correct = deck.cards.filter(c => isCorrect(answers[c.id] ?? '', c.translation)).length;
+    const checked = result !== null;
+    const total = result?.totalCount ?? deck.cards.length;
+    const correct = result?.correctCount ?? 0;
     const wrong = total - correct;
 
     function reset() {
         setAnswers({});
-        setChecked(false);
+        setResult(null);
+        setError(null);
+    }
+
+    async function handleCheck() {
+        setSubmitting(true);
+        setError(null);
+        try {
+            setResult(await checkDeck(
+                deck.id,
+                deck.cards.map(c => ({ cardId: c.id, userAnswer: answers[c.id] ?? '' }))
+            ));
+        } catch (e) {
+            setError(e instanceof Error ? e.message : 'Не вдалося перевірити відповіді');
+        } finally {
+            setSubmitting(false);
+        }
     }
 
     return (
@@ -45,7 +56,8 @@ export default function CheckView({ deck, onBack }: CheckViewProps) {
 
             <div className="fc-check__list">
                 {deck.cards.map((card, i) => {
-                    const ok = isCorrect(answers[card.id] ?? '', card.translation);
+                    const cardResult = result?.results[card.id];
+                    const ok = cardResult?.correct ?? false;
                     const state = !checked ? '' : ok ? ' fc-input--ok' : ' fc-input--bad';
                     return (
                         <div className="fc-check__row" key={card.id}>
@@ -65,7 +77,7 @@ export default function CheckView({ deck, onBack }: CheckViewProps) {
                                 />
                                 {checked && (
                                     <small className={ok ? 'fc-note fc-note--ok' : 'fc-note fc-note--bad'}>
-                                        {ok ? 'Правильно!' : `Правильна відповідь: ${card.translation}`}
+                                        {ok ? 'Правильно!' : `Правильна відповідь: ${cardResult?.expectedAnswer ?? card.translation}`}
                                     </small>
                                 )}
                             </div>
@@ -73,6 +85,13 @@ export default function CheckView({ deck, onBack }: CheckViewProps) {
                     );
                 })}
             </div>
+
+            {error && (
+                <div className="fc-alert" role="alert">
+                    <AlertCircle size={16} />
+                    <span>{error}</span>
+                </div>
+            )}
 
             <div className="fc-check__footer">
                 {checked ? (
@@ -83,8 +102,8 @@ export default function CheckView({ deck, onBack }: CheckViewProps) {
                         <RotateCcw size={15} /> Спробувати ще раз
                     </button>
                 ) : (
-                    <button type="button" className="fc-btn fc-btn--primary" onClick={() => setChecked(true)}>
-                        <CheckCheck size={15} /> Перевірити переклади
+                    <button type="button" className="fc-btn fc-btn--primary" onClick={handleCheck} disabled={submitting}>
+                        <CheckCheck size={15} /> {submitting ? 'Перевірка…' : 'Перевірити переклади'}
                     </button>
                 )}
             </div>

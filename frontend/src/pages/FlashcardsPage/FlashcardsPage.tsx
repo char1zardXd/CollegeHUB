@@ -1,8 +1,10 @@
-import { useCallback, useState } from 'react';
-import { BookOpen, ClipboardCheck, FolderOpen, FlaskConical, Languages, PlusCircle, RotateCcw, Sparkles } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+import { AlertCircle, BookOpen, ClipboardCheck, FolderOpen, FlaskConical, Languages, PlusCircle, RotateCcw, Sparkles } from 'lucide-react';
 
 import CreateDeckModal from '../../components/CreateDeckModal/CreateDeckModal';
-import { flashDecks } from '../../data/flashcards';
+import { createDeck, getDecks } from '../../api/flashcardsApi';
+import type { CreateDeckPayload } from '../../api/flashcardsApi';
+import { DEFAULT_MAX_FLIPS } from '../../data/flashcards';
 import type { FlashDeck } from '../../data/flashcards';
 import StudyView from './StudyView';
 import CheckView from './CheckView';
@@ -18,12 +20,33 @@ const tabs: { id: Tab; label: string; Icon: typeof FolderOpen }[] = [
 ];
 
 export default function FlashcardsPage() {
-    const [decks, setDecks] = useState<FlashDeck[]>(flashDecks);
+    const [decks, setDecks] = useState<FlashDeck[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState<string | null>(null);
+    const [reloadKey, setReloadKey] = useState(0);
     const [tab, setTab] = useState<Tab>('mine');
     const [mode, setMode] = useState<Mode>('catalog');
     const [activeId, setActiveId] = useState<number | null>(null);
     const [session, setSession] = useState(0);
     const [showCreate, setShowCreate] = useState(false);
+
+    useEffect(() => {
+        const controller = new AbortController();
+        setLoading(true);
+        setLoadError(null);
+
+        getDecks(controller.signal)
+            .then(setDecks)
+            .catch(error => {
+                if (controller.signal.aborted) return;
+                setLoadError(error instanceof Error ? error.message : 'Не вдалося завантажити набори');
+            })
+            .finally(() => {
+                if (!controller.signal.aborted) setLoading(false);
+            });
+
+        return () => controller.abort();
+    }, [reloadKey]);
 
     const closeCreate = useCallback(() => setShowCreate(false), []);
     const activeDeck = decks.find(d => d.id === activeId) ?? null;
@@ -41,12 +64,12 @@ export default function FlashcardsPage() {
         setMode('catalog');
     }
 
-    function handleCreate(data: Omit<FlashDeck, 'id'>) {
-        const id = Math.max(0, ...decks.map(d => d.id)) + 1;
-        setDecks(prev => [...prev, { ...data, id }]);
+    async function handleCreate(payload: CreateDeckPayload) {
+        const created = await createDeck(payload);
+        setDecks(prev => [...prev, created]);
         setShowCreate(false);
         setTab('mine');
-        openDeck(id);
+        openDeck(created.id);
     }
 
     return (
@@ -58,7 +81,7 @@ export default function FlashcardsPage() {
                         <span className="fc-badge"><Sparkles size={12} /> Мови, 2 переклади</span>
                     </span>
                     <h2>Тренажер термінів та слів</h2>
-                    <p>Клікніть на картку, щоб побачити переклад. Ліміт: 2 перегляди на картку.</p>
+                    <p>Клікніть на картку, щоб побачити переклад. Ліміт: {activeDeck?.maxFlips ?? DEFAULT_MAX_FLIPS} перегляди на картку.</p>
                 </div>
                 <div className="fc-banner__actions">
                     <button
@@ -99,7 +122,17 @@ export default function FlashcardsPage() {
 
             {mode === 'catalog' && (
                 <>
-                    {visible.length === 0 && <p className="fc-empty">У цій категорії ще немає наборів.</p>}
+                    {loading && <p className="fc-empty">Завантаження наборів…</p>}
+                    {loadError && (
+                        <div className="fc-alert" role="alert">
+                            <AlertCircle size={16} />
+                            <span>{loadError}</span>
+                            <button type="button" className="fc-link" onClick={() => setReloadKey(k => k + 1)}>
+                                Спробувати ще раз
+                            </button>
+                        </div>
+                    )}
+                    {!loading && !loadError && visible.length === 0 && <p className="fc-empty">У цій категорії ще немає наборів.</p>}
                     <div className="fc-grid">
                         {visible.map(deck => (
                             <article key={deck.id} className="fc-deck">
