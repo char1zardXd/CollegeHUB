@@ -2,10 +2,7 @@ package com.CollegeHUB.quizEDU.flashcards.service;
 
 import com.CollegeHUB.quizEDU.auth.entity.User;
 import com.CollegeHUB.quizEDU.auth.repo.UsersRepo;
-import com.CollegeHUB.quizEDU.flashcards.dto.DecksRequestDto;
-import com.CollegeHUB.quizEDU.flashcards.dto.DecksResponseDto;
-import com.CollegeHUB.quizEDU.flashcards.dto.FlashCardRequestDto;
-import com.CollegeHUB.quizEDU.flashcards.dto.FlashCardResponseDto;
+import com.CollegeHUB.quizEDU.flashcards.dto.*;
 import com.CollegeHUB.quizEDU.flashcards.entity.Deck;
 import com.CollegeHUB.quizEDU.flashcards.entity.FlashCard;
 import com.CollegeHUB.quizEDU.flashcards.repository.DeckRepo;
@@ -14,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @RequiredArgsConstructor
 @Service
@@ -78,5 +77,40 @@ public class FlashCardService {
                 deck.getMaxFlips(),
                 deckDto
         );
+    }
+
+    @Transactional
+    public CheckDeckResponse checkDeck(Long deckId, CheckDeckRequest request) {
+        Deck deck = deckRepo.findById(deckId).orElseThrow(() -> new RuntimeException("not found"));
+
+        int totalCount = deck.getCards().size();
+        int correctCount = 0;
+        List<CardCheckResultDto> results = new ArrayList<>();
+
+        for(FlashCard card : deck.getCards()) {
+            String userAnswer = "";
+            for(CardAnswerDto ans : request.getAnswers()) {
+                if(ans.getCardId().equals(card.getId())) {
+                    if(ans.getUserAnswer() != null) {
+                        userAnswer = ans.getUserAnswer();
+                    }
+                    break;
+                }
+            }
+
+            String cleanExpected = card.getAnswer().trim().toLowerCase();
+            String cleanUser = userAnswer.trim().toLowerCase();
+
+            boolean isCorrect = cleanExpected.equals(cleanUser);
+
+            if(isCorrect) {
+                correctCount++;
+            }
+
+            results.add(new CardCheckResultDto(card.getId(), isCorrect, card.getAnswer()));
+        }
+        double percentage = totalCount > 0 ? (correctCount * 100.0) / totalCount : 0.0;
+
+        return new CheckDeckResponse(totalCount, correctCount, percentage, results);
     }
 }
