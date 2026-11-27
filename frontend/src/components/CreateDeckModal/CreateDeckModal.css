@@ -1,13 +1,17 @@
 .deck-overlay {
     position: fixed; inset: 0; z-index: 2000;
     display: flex; justify-content: center; align-items: center; padding: 18px;
-    background: rgba(25, 23, 31, .53); backdrop-filter: blur(2px);
+    background: rgba(25, 23, 31, .53);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+    animation: deck-overlay-in .18s ease-out both;
 }
 .deck-modal {
     width: min(724px, 100%); max-height: min(88dvh, 850px);
     display: flex; flex-direction: column; overflow: hidden;
     background: #fff; border-radius: 36px; color: #262c38;
     box-shadow: 0 24px 65px rgba(17, 20, 33, .23);
+    animation: deck-dialog-in .22s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .deck-modal__header { display: flex; align-items: center; gap: 14px; padding: 32px 32px 18px; }
 .deck-modal__icon {
@@ -47,8 +51,38 @@
 .deck-btn--ghost:hover { background: #e7e3e6; }
 .deck-btn--primary { background: #a54d7d; color: #fff; }
 .deck-btn--primary:hover { background: #93416d; }
+
+@keyframes deck-overlay-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes deck-dialog-in {
+    from {
+        transform: translateY(13px) scale(0.98);
+        opacity: 0.6;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
 @media (max-width: 600px) {
+    .deck-overlay { padding: 10px; }
+    .deck-modal { border-radius: 24px; max-height: 95dvh; }
     .deck-modal__grid { grid-template-columns: 1fr; }
     .deck-modal__header, .deck-modal__body, .deck-modal__footer { padding-left: 20px; padding-right: 20px; }
     .deck-modal__footer { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .deck-overlay,
+    .deck-modal {
+        animation: none;
+    }
 }
