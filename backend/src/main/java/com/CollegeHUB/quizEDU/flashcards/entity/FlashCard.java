@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "flashcards")
-public class Flashcard {
+public class FlashCard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +26,7 @@ public class Flashcard {
     @JoinColumn(name = "deck_id", nullable = false)
     private Deck deck;
 
-    public Flashcard() {
+    public FlashCard() {
     }
 
     public Long getId() { return id; }

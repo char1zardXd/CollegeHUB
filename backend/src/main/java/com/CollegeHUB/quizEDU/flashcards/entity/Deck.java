@@ -27,9 +27,13 @@ public class Deck {
     private User author;
 
     @OneToMany(mappedBy = "deck", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Flashcard> cards = new ArrayList<>();
+    private List<FlashCard> cards = new ArrayList<>();
 
     public Deck() {
+    }
+
+    public void addCard(FlashCard card) {
+        cards.add(card);
     }
 
     public Long getId() { return id; }
@@ -47,6 +51,6 @@ public class Deck {
     public User getAuthor() { return author; }
     public void setAuthor(User author) { this.author = author; }
 
-    public List<Flashcard> getCards() { return cards; }
-    public void setCards(List<Flashcard> cards) { this.cards = cards; }
+    public List<FlashCard> getCards() { return cards; }
+    public void setCards(List<FlashCard> cards) { this.cards = cards; }
 }
