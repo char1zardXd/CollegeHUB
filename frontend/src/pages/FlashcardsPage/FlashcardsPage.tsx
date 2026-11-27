@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import type { CSSProperties } from 'react';
 import { AlertCircle, BookOpen, ClipboardCheck, FolderOpen, FlaskConical, Languages, PlusCircle, RotateCcw, Sparkles } from 'lucide-react';
 
 import CreateDeckModal from '../../components/CreateDeckModal/CreateDeckModal';
@@ -25,10 +26,40 @@ export default function FlashcardsPage() {
     const [loadError, setLoadError] = useState<string | null>(null);
     const [reloadKey, setReloadKey] = useState(0);
     const [tab, setTab] = useState<Tab>('mine');
+    const [tabDir, setTabDir] = useState<'left' | 'right' | 'none'>('none');
     const [mode, setMode] = useState<Mode>('catalog');
     const [activeId, setActiveId] = useState<number | null>(null);
     const [session, setSession] = useState(0);
     const [showCreate, setShowCreate] = useState(false);
+
+    const tabsContainerRef = useRef<HTMLDivElement | null>(null);
+    const tabRefs = useRef<Partial<Record<Tab, HTMLButtonElement | null>>>({});
+    const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number; ready: boolean }>({
+        left: 0,
+        width: 0,
+        ready: false,
+    });
+
+    const updateIndicator = useCallback(() => {
+        const container = tabsContainerRef.current;
+        const activeBtn = tabRefs.current[tab];
+        if (!container || !activeBtn) return;
+
+        setIndicatorStyle({
+            left: activeBtn.offsetLeft,
+            width: activeBtn.offsetWidth,
+            ready: true,
+        });
+    }, [tab]);
+
+    useLayoutEffect(() => {
+        updateIndicator();
+    }, [updateIndicator]);
+
+    useEffect(() => {
+        window.addEventListener('resize', updateIndicator);
+        return () => window.removeEventListener('resize', updateIndicator);
+    }, [updateIndicator]);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -60,6 +91,10 @@ export default function FlashcardsPage() {
     }
 
     function selectTab(next: Tab) {
+        if (next === tab && mode === 'catalog') return;
+        const prevIdx = tabs.findIndex(t => t.id === tab);
+        const nextIdx = tabs.findIndex(t => t.id === next);
+        setTabDir(nextIdx > prevIdx ? 'right' : nextIdx < prevIdx ? 'left' : 'none');
         setTab(next);
         setMode('catalog');
     }
@@ -68,6 +103,7 @@ export default function FlashcardsPage() {
         const created = await createDeck(payload);
         setDecks(prev => [...prev, created]);
         setShowCreate(false);
+        setTabDir('left');
         setTab('mine');
         openDeck(created.id);
     }
@@ -102,13 +138,25 @@ export default function FlashcardsPage() {
                 </div>
             </div>
 
-            <div className="fc-tabs" role="tablist">
-                <button type="button" className="fc-tab" onClick={() => setShowCreate(true)}>
+            <div className="fc-tabs" role="tablist" ref={tabsContainerRef}>
+                {indicatorStyle.ready && (
+                    <span
+                        className="fc-tabs__indicator"
+                        aria-hidden="true"
+                        style={{
+                            transform: `translateX(${indicatorStyle.left}px)`,
+                            width: `${indicatorStyle.width}px`,
+                        }}
+                    />
+                )}
+
+                <button type="button" className="fc-tab fc-tab--create" onClick={() => setShowCreate(true)}>
                     <PlusCircle size={15} /> Створити
                 </button>
                 {tabs.map(({ id, label, Icon }) => (
                     <button
                         key={id}
+                        ref={el => { tabRefs.current[id] = el; }}
                         type="button"
                         role="tab"
                         aria-selected={tab === id}
@@ -121,7 +169,10 @@ export default function FlashcardsPage() {
             </div>
 
             {mode === 'catalog' && (
-                <>
+                <div
+                    key={`catalog-${tab}`}
+                    className={`fc-view-transition${tabDir !== 'none' ? ` fc-view-transition--${tabDir}` : ''}`}
+                >
                     {loading && <p className="fc-empty">Завантаження наборів…</p>}
                     {loadError && (
                         <div className="fc-alert" role="alert">
@@ -132,11 +183,19 @@ export default function FlashcardsPage() {
                             </button>
                         </div>
                     )}
-                    {!loading && !loadError && visible.length === 0 && <p className="fc-empty">У цій категорії ще немає наборів.</p>}
+                    {!loading && !loadError && visible.length === 0 && (
+                        <p className="fc-empty">У цій категорії ще немає наборів.</p>
+                    )}
                     <div className="fc-grid">
-                        {visible.map(deck => (
-                            <article key={deck.id} className="fc-deck">
-                                <span className="fc-deck__cat">{deck.category === 'language' ? 'Мова' : deck.category === 'logic' ? 'Логіка та наука' : 'Інше'}</span>
+                        {visible.map((deck, idx) => (
+                            <article
+                                key={deck.id}
+                                className="fc-deck"
+                                style={{ '--stagger': idx } as CSSProperties}
+                            >
+                                <span className="fc-deck__cat">
+                                    {deck.category === 'language' ? 'Мова' : deck.category === 'logic' ? 'Логіка та наука' : 'Інше'}
+                                </span>
                                 <h3>{deck.title}</h3>
                                 <p>{deck.description}</p>
                                 <div className="fc-deck__footer">
@@ -146,15 +205,19 @@ export default function FlashcardsPage() {
                             </article>
                         ))}
                     </div>
-                </>
+                </div>
             )}
 
             {mode === 'study' && activeDeck && (
-                <StudyView key={`${activeDeck.id}-${session}`} deck={activeDeck} onBack={() => setMode('catalog')} />
+                <div key={`study-${activeDeck.id}-${session}`} className="fc-view-transition fc-view-transition--fade">
+                    <StudyView deck={activeDeck} onBack={() => setMode('catalog')} />
+                </div>
             )}
 
             {mode === 'check' && activeDeck && (
-                <CheckView key={`${activeDeck.id}-${session}-check`} deck={activeDeck} onBack={() => setMode('study')} />
+                <div key={`check-${activeDeck.id}-${session}`} className="fc-view-transition fc-view-transition--fade">
+                    <CheckView deck={activeDeck} onBack={() => setMode('study')} />
+                </div>
             )}
 
             {showCreate && <CreateDeckModal onClose={closeCreate} onCreate={handleCreate} />}

@@ -1,13 +1,11 @@
-#build
-FROM eclipse-temurin:25-jdk-alpine AS build
+FROM --platform=$BUILDPLATFORM eclipse-temurin:25-jdk-alpine AS build
 WORKDIR /app
 COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
-RUN chmod +x mvnw && ./mvnw dependency:go-offline
+RUN --mount=type=cache,target=/root/.m2 chmod +x mvnw && ./mvnw dependency:go-offline
 COPY src ./src
-RUN ./mvnw clean package -DskipTests
+RUN --mount=type=cache,target=/root/.m2 ./mvnw package -DskipTests
 
-#start
 FROM eclipse-temurin:25-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
