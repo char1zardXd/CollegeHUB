@@ -10,6 +10,7 @@ interface StudyViewProps {
 
 export default function StudyView({ deck, onBack }: StudyViewProps) {
     const [index, setIndex] = useState(0);
+    const [slideDir, setSlideDir] = useState<'next' | 'prev' | 'none'>('none');
     const [flipped, setFlipped] = useState(false);
     const [reveals, setReveals] = useState<Record<number, number>>({});
     const [known, setKnown] = useState<Set<number>>(() => new Set());
@@ -22,6 +23,7 @@ export default function StudyView({ deck, onBack }: StudyViewProps) {
     const isLast = index === deck.cards.length - 1;
 
     function go(next: number) {
+        setSlideDir(next > index ? 'next' : 'prev');
         setIndex(next);
         setFlipped(false);
         setLimitHit(false);
@@ -53,7 +55,10 @@ export default function StudyView({ deck, onBack }: StudyViewProps) {
     function restart() {
         setReveals({});
         setKnown(new Set());
-        go(0);
+        setSlideDir('prev');
+        setIndex(0);
+        setFlipped(false);
+        setLimitHit(false);
     }
 
     const meta = [card.transcription ? `[ ${card.transcription} ]` : null, card.partOfSpeech]
@@ -76,27 +81,50 @@ export default function StudyView({ deck, onBack }: StudyViewProps) {
                 </span>
             </div>
 
-            <button
-                type="button"
-                className={`fc-card${flipped ? ' fc-card--back' : ''}`}
-                onClick={handleFlip}
-                aria-label={flipped ? 'Сховати переклад' : 'Показати переклад'}
+            <div
+                key={card.id}
+                className={`fc-card-stage${slideDir !== 'none' ? ` fc-card-stage--${slideDir}` : ''}`}
             >
-                <span className="fc-card__label">{flipped ? 'Значення / переклад' : 'Термін / слово'}</span>
-                {!flipped && (
-                    <span className={`fc-pill fc-pill--tiny${revealCount >= maxReveals ? ' fc-pill--danger' : ''}`}>
-                        Ліміт переглядів: {revealCount} / {maxReveals}
-                    </span>
-                )}
-                <span className="fc-card__main">{flipped ? card.translation : card.term}</span>
-                <span className="fc-card__sub">
-                    {flipped ? (card.example ? `“${card.example}”` : '') : meta}
-                </span>
-                <span className="fc-card__hint">
-                    <Hand size={14} />
-                    {flipped ? 'Натисніть, щоб повернути картку' : 'Натисніть, щоб побачити значення'}
-                </span>
-            </button>
+                <button
+                    type="button"
+                    className={`fc-card${flipped ? ' fc-card--flipped' : ''}${limitHit && !flipped ? ' fc-card--shake' : ''}`}
+                    onClick={handleFlip}
+                    aria-pressed={flipped}
+                    aria-label={flipped ? 'Сховати переклад' : 'Показати переклад'}
+                >
+                    <div className="fc-card__inner">
+                        {/* Лицьова сторона */}
+                        <div className="fc-card__face fc-card__face--front">
+                            <span className="fc-card__label">Термін / слово</span>
+                            <span className={`fc-pill fc-pill--tiny${revealCount >= maxReveals ? ' fc-pill--danger' : ''}`}>
+                                Ліміт переглядів: {revealCount} / {maxReveals}
+                            </span>
+                            <span className="fc-card__main">{card.term}</span>
+                            <span className="fc-card__sub">{meta}</span>
+                            <span className="fc-card__hint">
+                                <Hand size={14} />
+                                Натисніть, щоб побачити значення
+                            </span>
+                        </div>
+
+                        {/* Зворотна сторона */}
+                        <div className="fc-card__face fc-card__face--back">
+                            <span className="fc-card__label">Значення / переклад</span>
+                            <span className="fc-pill fc-pill--tiny fc-pill--light">
+                                Переглядів: {revealCount} / {maxReveals}
+                            </span>
+                            <span className="fc-card__main">{card.translation}</span>
+                            <span className="fc-card__sub">
+                                {card.example ? `“${card.example}”` : ''}
+                            </span>
+                            <span className="fc-card__hint">
+                                <Hand size={14} />
+                                Натисніть, щоб повернути картку
+                            </span>
+                        </div>
+                    </div>
+                </button>
+            </div>
 
             {limitHit && (
                 <div className="fc-alert" role="alert">
